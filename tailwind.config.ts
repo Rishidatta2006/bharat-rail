@@ -1,3 +1,4 @@
+
 import type { Config } from "tailwindcss";
 
 export default {
@@ -26,11 +27,31 @@ export default {
 				foreground: 'hsl(var(--foreground))',
 				primary: {
 					DEFAULT: 'hsl(var(--primary))',
-					foreground: 'hsl(var(--primary-foreground))'
+					foreground: 'hsl(var(--primary-foreground))',
+          50: '#e6f0ff',
+          100: '#b3d1ff',
+          200: '#80b3ff',
+          300: '#4d94ff',
+          400: '#1a75ff',
+          500: '#0047AB', // Indian Railway Blue
+          600: '#003d91',
+          700: '#003377',
+          800: '#00295e',
+          900: '#001a44',
 				},
 				secondary: {
 					DEFAULT: 'hsl(var(--secondary))',
-					foreground: 'hsl(var(--secondary-foreground))'
+					foreground: 'hsl(var(--secondary-foreground))',
+          50: '#fff0e6',
+          100: '#ffd1b3',
+          200: '#ffb380',
+          300: '#ff944d',
+          400: '#ff751a',
+          500: '#F7931E', // Indian Railway Orange
+          600: '#e67300',
+          700: '#cc6600',
+          800: '#b35900',
+          900: '#994d00',
 				},
 				destructive: {
 					DEFAULT: 'hsl(var(--destructive))',
@@ -52,16 +73,9 @@ export default {
 					DEFAULT: 'hsl(var(--card))',
 					foreground: 'hsl(var(--card-foreground))'
 				},
-				sidebar: {
-					DEFAULT: 'hsl(var(--sidebar-background))',
-					foreground: 'hsl(var(--sidebar-foreground))',
-					primary: 'hsl(var(--sidebar-primary))',
-					'primary-foreground': 'hsl(var(--sidebar-primary-foreground))',
-					accent: 'hsl(var(--sidebar-accent))',
-					'accent-foreground': 'hsl(var(--sidebar-accent-foreground))',
-					border: 'hsl(var(--sidebar-border))',
-					ring: 'hsl(var(--sidebar-ring))'
-				}
+			},
+			fontFamily: {
+				sans: ['Poppins', 'system-ui', 'sans-serif'],
 			},
 			borderRadius: {
 				lg: 'var(--radius)',
@@ -84,12 +98,25 @@ export default {
 					to: {
 						height: '0'
 					}
-				}
+				},
+        'train-move': {
+          '0%': { transform: 'translateX(-100%)' },
+          '100%': { transform: 'translateX(100%)' }
+        },
+        'fade-in': {
+          '0%': { opacity: '0' },
+          '100%': { opacity: '1' }
+        }
 			},
 			animation: {
 				'accordion-down': 'accordion-down 0.2s ease-out',
-				'accordion-up': 'accordion-up 0.2s ease-out'
-			}
+				'accordion-up': 'accordion-up 0.2s ease-out',
+        'train-move': 'train-move 5s ease-in-out infinite',
+        'fade-in': 'fade-in 0.5s ease-in-out'
+			},
+      backgroundImage: {
+        'hero-pattern': "url('/src/assets/train-hero.jpg')",
+      },
 		}
 	},
 	plugins: [require("tailwindcss-animate")],
