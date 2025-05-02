@@ -6,7 +6,7 @@ const InfoSection = () => {
     {
       icon: <MapPin className="h-8 w-8 text-primary-500" />,
       title: 'India-wide Network',
-      description: 'Book tickets for trains connecting over 7,000 stations across India's vast railway network.'
+      description: 'Book tickets for trains connecting over 7,000 stations across India\'s vast railway network.'
     },
     {
       icon: <Calendar className="h-8 w-8 text-primary-500" />,
