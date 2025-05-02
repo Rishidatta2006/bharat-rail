@@ -44,11 +44,11 @@ const Hero = () => {
                 />
               </div>
               <div className="absolute -bottom-6 -right-6 bg-white p-4 rounded-lg shadow-lg">
-                <div className="flex items-center">
+                <div className="flex items-center gap-2">
                   <div className="text-secondary-500">
                     <TrainFront size={24} />
                   </div>
-                  <div className="ml-3">
+                  <div>
                     <p className="text-sm font-medium text-gray-900">Premium Experience</p>
                     <p className="text-xs text-gray-600">Modern & Comfortable</p>
                   </div>
