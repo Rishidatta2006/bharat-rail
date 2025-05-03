@@ -1,5 +1,6 @@
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import { useLocation } from 'react-router-dom';
 import Navbar from '@/components/layout/Navbar';
 import Footer from '@/components/layout/Footer';
 import { Input } from '@/components/ui/input';
@@ -7,15 +8,51 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { toast } from '@/components/ui/use-toast';
 import TrainCard from '@/components/ui/TrainCard';
-import { searchTrains } from '@/utils/db';
+import { searchTrains, getStations } from '@/utils/db';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 
 const Trains = () => {
-  const [fromStation, setFromStation] = useState('');
-  const [toStation, setToStation] = useState('');
-  const [journeyDate, setJourneyDate] = useState('');
+  const location = useLocation();
+  const queryParams = new URLSearchParams(location.search);
+  
+  // Get query parameters
+  const fromQuery = queryParams.get('from') || '';
+  const toQuery = queryParams.get('to') || '';
+  const dateQuery = queryParams.get('date') || '';
+  const classQuery = queryParams.get('class') || '';
+  const quotaQuery = queryParams.get('quota') || 'GN';
+  
+  const stations = getStations().map(station => station.name);
+  
+  const [fromStation, setFromStation] = useState(fromQuery);
+  const [toStation, setToStation] = useState(toQuery);
+  const [journeyDate, setJourneyDate] = useState(dateQuery);
+  const [travelClass, setTravelClass] = useState(classQuery);
+  const [quota, setQuota] = useState(quotaQuery);
   const [isLoading, setIsLoading] = useState(false);
   const [searchResults, setSearchResults] = useState<any[]>([]);
   const [hasSearched, setHasSearched] = useState(false);
+
+  const travelClasses = [
+    { value: "Sleeper", label: "Sleeper Class" },
+    { value: "AC", label: "AC Class" },
+    { value: "General", label: "General Class" }
+  ];
+
+  const quotas = [
+    { value: "GN", label: "General Quota (GN)" },
+    { value: "TQ", label: "Tatkal Quota (TQ)" },
+    { value: "LD", label: "Ladies Quota (LD)" },
+    { value: "DF", label: "Defense Quota (DF)" },
+    { value: "SR", label: "Senior Citizen Quota (SR)" }
+  ];
+
+  // Run search if URL has query parameters
+  useEffect(() => {
+    if (fromQuery && toQuery) {
+      handleSearch();
+    }
+  }, []);
 
   // Function to handle the search
   const handleSearch = () => {
@@ -36,10 +73,25 @@ const Trains = () => {
       const result = searchTrains(fromStation, toStation, journeyDate);
       
       if (result.success) {
-        setSearchResults(result.data);
+        // Filter by class if selected
+        let filteredResults = result.data;
+        if (travelClass) {
+          filteredResults = filteredResults.filter((train: any) => 
+            train.classes.includes(travelClass)
+          );
+        }
+        
+        // Apply tatkal filter if quota is TQ
+        if (quota === 'TQ') {
+          filteredResults = filteredResults.filter((train: any) => 
+            train.tatkal_available === 'Yes'
+          );
+        }
+        
+        setSearchResults(filteredResults);
         toast({
           title: "Search Complete",
-          description: result.message
+          description: `Found ${filteredResults.length} train(s) for this route`
         });
       } else {
         setSearchResults([]);
@@ -70,33 +122,84 @@ const Trains = () => {
             <h1 className="text-3xl font-bold text-gray-900 mb-4">Find Available Trains</h1>
             <Card className="bg-white shadow-md">
               <CardContent className="p-6">
-                <div className="flex flex-col md:flex-row gap-4">
-                  <Input 
-                    placeholder="From station" 
-                    className="flex-1"
-                    value={fromStation}
-                    onChange={(e) => setFromStation(e.target.value)}
-                  />
-                  <Input 
-                    placeholder="To station" 
-                    className="flex-1"
-                    value={toStation}
-                    onChange={(e) => setToStation(e.target.value)}
-                  />
-                  <Input 
-                    type="date"
-                    placeholder="Journey date" 
-                    className="flex-1"
-                    value={journeyDate}
-                    onChange={(e) => setJourneyDate(e.target.value)}
-                  />
-                  <Button 
-                    className="bg-primary-500 hover:bg-primary-600"
-                    onClick={handleSearch}
-                    disabled={isLoading}
-                  >
-                    {isLoading ? "Searching..." : "Search"}
-                  </Button>
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-6 gap-4">
+                  <div className="lg:col-span-1">
+                    <label className="text-sm font-medium block mb-1">From</label>
+                    <Select value={fromStation} onValueChange={setFromStation}>
+                      <SelectTrigger>
+                        <SelectValue placeholder="From station" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {stations.map((station) => (
+                          <SelectItem key={station} value={station}>{station}</SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </div>
+                  
+                  <div className="lg:col-span-1">
+                    <label className="text-sm font-medium block mb-1">To</label>
+                    <Select value={toStation} onValueChange={setToStation}>
+                      <SelectTrigger>
+                        <SelectValue placeholder="To station" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {stations.map((station) => (
+                          <SelectItem key={station} value={station}>{station}</SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </div>
+                  
+                  <div className="lg:col-span-1">
+                    <label className="text-sm font-medium block mb-1">Date</label>
+                    <Input 
+                      type="date"
+                      placeholder="Journey date" 
+                      value={journeyDate}
+                      onChange={(e) => setJourneyDate(e.target.value)}
+                    />
+                  </div>
+                  
+                  <div className="lg:col-span-1">
+                    <label className="text-sm font-medium block mb-1">Class</label>
+                    <Select value={travelClass} onValueChange={setTravelClass}>
+                      <SelectTrigger>
+                        <SelectValue placeholder="Any class" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="">Any class</SelectItem>
+                        {travelClasses.map((c) => (
+                          <SelectItem key={c.value} value={c.value}>{c.label}</SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </div>
+                  
+                  <div className="lg:col-span-1">
+                    <label className="text-sm font-medium block mb-1">Quota</label>
+                    <Select value={quota} onValueChange={setQuota}>
+                      <SelectTrigger>
+                        <SelectValue />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {quotas.map((q) => (
+                          <SelectItem key={q.value} value={q.value}>{q.label}</SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </div>
+                  
+                  <div className="lg:col-span-1">
+                    <label className="text-sm font-medium block mb-1 opacity-0">Search</label>
+                    <Button 
+                      className="w-full bg-primary-500 hover:bg-primary-600"
+                      onClick={handleSearch}
+                      disabled={isLoading}
+                    >
+                      {isLoading ? "Searching..." : "Search"}
+                    </Button>
+                  </div>
                 </div>
               </CardContent>
             </Card>
@@ -128,11 +231,14 @@ const Trains = () => {
           )}
           
           {!hasSearched && (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-              {[1, 4, 6].map((id) => {
-                const train = searchTrains('', '', '').data.find((t: any) => t.id === id);
-                return train ? <TrainCard key={train.id} train={train} /> : null;
-              })}
+            <div className="space-y-8">
+              <h2 className="text-2xl font-bold mb-6">Popular Trains</h2>
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                {[17655, 17656, 17657].map((trainNumber) => {
+                  const trainInfo = searchTrains('', '', '').data.find((t: any) => t.id === trainNumber);
+                  return trainInfo ? <TrainCard key={trainInfo.id} train={trainInfo} /> : null;
+                })}
+              </div>
             </div>
           )}
         </div>

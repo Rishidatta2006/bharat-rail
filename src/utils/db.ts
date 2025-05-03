@@ -16,577 +16,743 @@ export const dbConfig: DatabaseConfig = {
   host: 'localhost',
   user: 'root',
   password: '4801',
-  database: 'bharatrail',
+  database: 'RailwayReservationSystem',
   port: 3306
 };
 
 // Mock database tables and data for the frontend
-// In a real application, this would be fetched from the backend
+// This mimics the structure from the SQL queries provided
 export const mockDatabaseData = {
-  trains: [
+  user: [
     {
-      id: 1,
-      train_number: "12301",
-      train_name: "Rajdhani Express",
-      coaches: 22,
-      train_type: "Rajdhani",
-      from: "Delhi",
-      to: "Mumbai",
-      starting_station: "New Delhi (NDLS)",
-      ending_station: "Mumbai Central (MMCT)",
-      intermediate_stops: ["Mathura", "Kota", "Ratlam", "Vadodara", "Surat"],
-      departureTime: "16:25",
-      arrivalTime: "08:15",
-      duration: "15h 50m",
-      days: ["Mon", "Wed", "Fri"],
-      classes: ["SL", "3A", "2A", "1A"],
-      totalSeats: 750,
-      availableSeats: 120,
-      fare: {
-        "SL": 750,
-        "3A": 1250,
-        "2A": 2350,
-        "1A": 4100
-      },
-      tatkal_available: "Yes",
-      tatkal_booking_start_time: "10:00",
-      starting_station_state: "Delhi",
+      Aadhar_ID: '241814704698',
+      First_Name: 'John',
+      Last_Name: 'Doe',
+      Email: 'john.doe@email.com',
+      Password: 'password123',
+      Phone_Number: '9876543210',
+      Gender: 'Male',
+      Address_Line1: 'Street 1, Mumbai',
+      Address_Line2: 'Maharashtra'
+    },
+    {
+      Aadhar_ID: '341814704699',
+      First_Name: 'Alice',
+      Last_Name: 'Smith',
+      Email: 'alice.smith@email.com',
+      Password: 'pass456',
+      Phone_Number: '8765432109',
+      Gender: 'Female',
+      Address_Line1: 'Street 2, Delhi',
+      Address_Line2: 'Delhi'
+    },
+    {
+      Aadhar_ID: '441814704700',
+      First_Name: 'Robert',
+      Last_Name: 'Johnson',
+      Email: 'robert.j@email.com',
+      Password: 'pass789',
+      Phone_Number: '7654321098',
+      Gender: 'Male',
+      Address_Line1: 'Street 3, Bangalore',
+      Address_Line2: 'Karnataka'
+    },
+    {
+      Aadhar_ID: '541814704701',
+      First_Name: 'Emily',
+      Last_Name: 'Davis',
+      Email: 'emily.d@email.com',
+      Password: 'pass101',
+      Phone_Number: '6543210987',
+      Gender: 'Female',
+      Address_Line1: 'Street 4, Chennai',
+      Address_Line2: 'Tamil Nadu'
+    },
+    {
+      Aadhar_ID: '641814704702',
+      First_Name: 'Michael',
+      Last_Name: 'Garcia',
+      Email: 'michael.g@email.com',
+      Password: 'pass202',
+      Phone_Number: '5432109876',
+      Gender: 'Male',
+      Address_Line1: 'Street 5, Hyderabad',
+      Address_Line2: 'Telangana'
+    }
+  ],
+  passenger: [
+    {
+      Passenger_ID: 'SE646DFS84R',
+      First_Name: 'Michael',
+      Last_Name: 'Brown',
+      Email: 'michael.b@email.com',
+      Gender: 'Male',
+      Age: 30,
+      Phone_Number: '9876123456'
+    },
+    {
+      Passenger_ID: 'SE647DFS85R',
+      First_Name: 'Emma',
+      Last_Name: 'Wilson',
+      Email: 'emma.w@email.com',
+      Gender: 'Female',
+      Age: 25,
+      Phone_Number: '8765123456'
+    },
+    {
+      Passenger_ID: 'SE648DFS86R',
+      First_Name: 'James',
+      Last_Name: 'Taylor',
+      Email: 'james.t@email.com',
+      Gender: 'Male',
+      Age: 28,
+      Phone_Number: '7654321234'
+    },
+    {
+      Passenger_ID: 'SE649DFS87R',
+      First_Name: 'Olivia',
+      Last_Name: 'Anderson',
+      Email: 'olivia.a@email.com',
+      Gender: 'Female',
+      Age: 22,
+      Phone_Number: '6543212345'
+    },
+    {
+      Passenger_ID: 'SE650DFS88R',
+      First_Name: 'Liam',
+      Last_Name: 'Thomas',
+      Email: 'liam.t@email.com',
+      Gender: 'Male',
+      Age: 35,
+      Phone_Number: '5432109876'
+    },
+    {
+      Passenger_ID: 'SE651DFS89R',
+      First_Name: 'Sophia',
+      Last_Name: 'Martinez',
+      Email: 'sophia.m@email.com',
+      Gender: 'Female',
+      Age: 27,
+      Phone_Number: '8975123456'
+    },
+    {
+      Passenger_ID: 'SE652DFS90R',
+      First_Name: 'William',
+      Last_Name: 'Roberts',
+      Email: 'william.r@email.com',
+      Gender: 'Male',
+      Age: 31,
+      Phone_Number: '7651234567'
+    },
+    {
+      Passenger_ID: 'SE653DFS91R',
+      First_Name: 'Ava',
+      Last_Name: 'Williams',
+      Email: 'ava.w@email.com',
+      Gender: 'Female',
+      Age: 29,
+      Phone_Number: '6512345678'
+    }
+  ],
+  feedback: [
+    {
+      Feedback_ID: '3686416846',
+      Passenger_ID: 'SE646DFS84R',
+      Feedback_Text: 'Great service and comfortable journey.'
+    },
+    {
+      Feedback_ID: '3686416847',
+      Passenger_ID: 'SE647DFS85R',
+      Feedback_Text: 'The train was on time, but the food could be better.'
+    },
+    {
+      Feedback_ID: '3686416848',
+      Passenger_ID: 'SE648DFS86R',
+      Feedback_Text: 'Had a wonderful experience, will travel again!'
+    },
+    {
+      Feedback_ID: '3686416849',
+      Passenger_ID: 'SE649DFS87R',
+      Feedback_Text: 'The seats were not clean.'
+    },
+    {
+      Feedback_ID: '3686416850',
+      Passenger_ID: 'SE650DFS88R',
+      Feedback_Text: 'Overall a good journey, but the delay was disappointing.'
+    },
+    {
+      Feedback_ID: '3686416851',
+      Passenger_ID: 'SE651DFS89R',
+      Feedback_Text: 'The staff was very helpful and courteous.'
+    },
+    {
+      Feedback_ID: '3686416852',
+      Passenger_ID: 'SE652DFS90R',
+      Feedback_Text: 'Train was late by 30 minutes, but otherwise good service.'
+    },
+    {
+      Feedback_ID: '3686416853',
+      Passenger_ID: 'SE653DFS91R',
+      Feedback_Text: 'Clean compartments and good food service.'
+    }
+  ],
+  train: [
+    {
+      Train_Number: 17655,
+      Train_Name: 'Chennai Express',
+      Coaches: 10,
       imageUrl: "https://images.unsplash.com/photo-1535535112387-56ffe8db21ff?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1000&q=80",
-      route_id: "NR-01"
-    },
-    {
-      id: 2,
-      train_number: "12002",
-      train_name: "Shatabdi Express",
-      coaches: 16,
-      train_type: "Shatabdi",
-      from: "Delhi",
-      to: "Lucknow",
-      starting_station: "New Delhi (NDLS)",
-      ending_station: "Lucknow Jn (LKO)",
-      intermediate_stops: ["Ghaziabad", "Aligarh", "Tundla", "Etawah", "Kanpur"],
-      departureTime: "06:10",
-      arrivalTime: "12:40",
-      duration: "6h 30m",
-      days: ["Daily"],
-      classes: ["CC", "EC"],
-      totalSeats: 500,
-      availableSeats: 85,
-      fare: {
-        "CC": 850,
-        "EC": 1650
-      },
+      availableSeats: 120,
       tatkal_available: "Yes",
       tatkal_booking_start_time: "10:00",
-      starting_station_state: "Delhi",
+      classes: ["Sleeper", "AC", "General"],
+      fare: {
+        "Sleeper": 750,
+        "AC": 1250,
+        "General": 350
+      },
+      train_type: "Express",
+      days: ["Mon", "Wed", "Fri"]
+    },
+    {
+      Train_Number: 17656,
+      Train_Name: 'Mumbai Superfast',
+      Coaches: 12,
       imageUrl: "https://images.unsplash.com/photo-1573413154008-87b37a7d04a3?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1000&q=80",
-      route_id: "NR-02"
-    },
-    {
-      id: 3,
-      train_number: "12213",
-      train_name: "Duronto Express",
-      coaches: 18,
-      train_type: "Duronto",
-      from: "Mumbai",
-      to: "Delhi",
-      starting_station: "Mumbai Central (MMCT)",
-      ending_station: "New Delhi (NDLS)",
-      intermediate_stops: ["Surat", "Vadodara", "Ratlam", "Kota"],
-      departureTime: "23:05",
-      arrivalTime: "16:35",
-      duration: "17h 30m",
-      days: ["Tue", "Thu", "Sat"],
-      classes: ["SL", "3A", "2A"],
-      totalSeats: 680,
-      availableSeats: 42,
-      fare: {
-        "SL": 720,
-        "3A": 1320,
-        "2A": 2520
-      },
+      availableSeats: 80,
       tatkal_available: "Yes",
       tatkal_booking_start_time: "11:00",
-      starting_station_state: "Maharashtra",
+      classes: ["Sleeper", "AC", "General"],
+      fare: {
+        "Sleeper": 850,
+        "AC": 1350,
+        "General": 450
+      },
+      train_type: "Superfast",
+      days: ["Daily"]
+    },
+    {
+      Train_Number: 17657,
+      Train_Name: 'Bangalore Rajdhani',
+      Coaches: 15,
       imageUrl: "https://images.unsplash.com/photo-1540544660406-6a69dacb2804?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=600&q=80",
-      route_id: "WR-01"
-    },
-    {
-      id: 4,
-      train_number: "22119",
-      train_name: "Vande Bharat Express",
-      coaches: 16,
-      train_type: "Vande Bharat",
-      from: "Mumbai",
-      to: "Ahmedabad",
-      starting_station: "Mumbai Central (MMCT)",
-      ending_station: "Ahmedabad Junction (ADI)",
-      intermediate_stops: ["Borivali", "Vapi", "Surat", "Vadodara", "Anand"],
-      departureTime: "07:45",
-      arrivalTime: "13:55",
-      duration: "6h 10m",
-      days: ["Daily"],
-      classes: ["CC", "EC"],
-      totalSeats: 530,
-      availableSeats: 210,
-      fare: {
-        "CC": 1050,
-        "EC": 1950
-      },
-      tatkal_available: "Yes",
-      tatkal_booking_start_time: "11:00",
-      starting_station_state: "Maharashtra",
-      imageUrl: "https://images.unsplash.com/photo-1527303361864-c228e3f25587?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=600&q=80",
-      route_id: "WR-02"
-    },
-    {
-      id: 5,
-      train_number: "12303",
-      train_name: "Poorva Express",
-      coaches: 20,
-      train_type: "Superfast",
-      from: "Howrah",
-      to: "Delhi",
-      starting_station: "Howrah Junction (HWH)",
-      ending_station: "New Delhi (NDLS)",
-      intermediate_stops: ["Asansol", "Dhanbad", "Gaya", "Mughal Sarai", "Allahabad", "Kanpur"],
-      departureTime: "08:15",
-      arrivalTime: "07:50",
-      duration: "23h 35m",
-      days: ["Mon", "Wed", "Fri", "Sun"],
-      classes: ["SL", "3A", "2A"],
-      totalSeats: 680,
-      availableSeats: 120,
-      fare: {
-        "SL": 680,
-        "3A": 1280,
-        "2A": 2180
-      },
-      tatkal_available: "Yes",
-      tatkal_booking_start_time: "10:30",
-      starting_station_state: "West Bengal",
-      imageUrl: "https://images.unsplash.com/photo-1493962853295-0fd70327578a?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1000&q=80",
-      route_id: "ER-01"
-    },
-    {
-      id: 6,
-      train_number: "12622",
-      train_name: "Tamil Nadu Express",
-      coaches: 21,
-      train_type: "Superfast",
-      from: "Chennai",
-      to: "Delhi",
-      starting_station: "Chennai Central (MAS)",
-      ending_station: "New Delhi (NDLS)",
-      intermediate_stops: ["Vijayawada", "Nagpur", "Bhopal", "Jhansi", "Agra", "Mathura"],
-      departureTime: "22:00",
-      arrivalTime: "07:10",
-      duration: "33h 10m",
-      days: ["Daily"],
-      classes: ["SL", "3A", "2A", "1A"],
-      totalSeats: 750,
-      availableSeats: 85,
-      fare: {
-        "SL": 850,
-        "3A": 1550,
-        "2A": 2650,
-        "1A": 4300
-      },
-      tatkal_available: "Yes",
-      tatkal_booking_start_time: "11:00",
-      starting_station_state: "Tamil Nadu",
-      imageUrl: "https://images.unsplash.com/photo-1517022812141-23620dba5c23?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1000&q=80",
-      route_id: "SR-01"
-    },
-    {
-      id: 7,
-      train_number: "12650",
-      train_name: "Karnataka Sampark Kranti",
-      coaches: 19,
-      train_type: "Sampark Kranti",
-      from: "Bangalore",
-      to: "Delhi",
-      starting_station: "KSR Bengaluru (SBC)",
-      ending_station: "H. Nizamuddin (NZM)",
-      intermediate_stops: ["Dharmavaram", "Secunderabad", "Nagpur", "Bhopal", "Jhansi", "Agra"],
-      departureTime: "13:30",
-      arrivalTime: "16:55",
-      duration: "27h 25m",
-      days: ["Tue", "Thu", "Sat"],
-      classes: ["SL", "3A", "2A"],
-      totalSeats: 680,
-      availableSeats: 154,
-      fare: {
-        "SL": 780,
-        "3A": 1380,
-        "2A": 2480
-      },
+      availableSeats: 150,
       tatkal_available: "Yes",
       tatkal_booking_start_time: "10:15",
-      starting_station_state: "Karnataka",
-      imageUrl: "https://images.unsplash.com/photo-1498050108023-c5249f4df085?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1000&q=80",
-      route_id: "SWR-01"
-    },
-    {
-      id: 8,
-      train_number: "12723",
-      train_name: "Telangana Express",
-      coaches: 18,
-      train_type: "Superfast",
-      from: "Hyderabad",
-      to: "Delhi",
-      starting_station: "Hyderabad Deccan (HYB)",
-      ending_station: "New Delhi (NDLS)",
-      intermediate_stops: ["Secunderabad", "Nagpur", "Bhopal", "Jhansi", "Gwalior", "Agra"],
-      departureTime: "06:35",
-      arrivalTime: "10:25",
-      duration: "27h 50m",
-      days: ["Daily"],
-      classes: ["SL", "3A", "2A"],
-      totalSeats: 650,
-      availableSeats: 110,
+      classes: ["Sleeper", "AC"],
       fare: {
-        "SL": 760,
-        "3A": 1360,
-        "2A": 2460
+        "Sleeper": 900,
+        "AC": 1600
       },
-      tatkal_available: "Yes",
-      tatkal_booking_start_time: "10:30",
-      starting_station_state: "Telangana",
-      imageUrl: "https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1000&q=80",
-      route_id: "SCR-01"
-    },
-    {
-      id: 9,
-      train_number: "12951",
-      train_name: "Mumbai Rajdhani",
-      coaches: 19,
       train_type: "Rajdhani",
-      from: "Mumbai",
-      to: "Delhi",
-      starting_station: "Mumbai Central (MMCT)",
-      ending_station: "New Delhi (NDLS)",
-      intermediate_stops: ["Surat", "Vadodara", "Ratlam", "Kota"],
-      departureTime: "17:00",
-      arrivalTime: "08:35",
-      duration: "15h 35m",
-      days: ["Daily"],
-      classes: ["3A", "2A", "1A"],
-      totalSeats: 550,
-      availableSeats: 75,
-      fare: {
-        "3A": 1450,
-        "2A": 2550,
-        "1A": 4300
-      },
-      tatkal_available: "Yes",
-      tatkal_booking_start_time: "11:00",
-      starting_station_state: "Maharashtra",
-      imageUrl: "https://images.unsplash.com/photo-1488590528505-98d2b5aba04b?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1000&q=80",
-      route_id: "WR-03"
+      days: ["Tue", "Thu", "Sat"]
     },
     {
-      id: 10,
-      train_number: "12009",
-      train_name: "Mumbai - Ahmedabad Shatabdi Express",
-      coaches: 14,
-      train_type: "Shatabdi",
-      from: "Mumbai",
-      to: "Ahmedabad",
-      starting_station: "Mumbai Central (MMCT)",
-      ending_station: "Ahmedabad Junction (ADI)",
-      intermediate_stops: ["Borivali", "Vapi", "Surat", "Bharuch", "Vadodara", "Anand"],
-      departureTime: "06:25",
-      arrivalTime: "13:10",
-      duration: "6h 45m",
-      days: ["Daily except Sunday"],
-      classes: ["CC", "EC"],
-      totalSeats: 450,
-      availableSeats: 130,
-      fare: {
-        "CC": 900,
-        "EC": 1800
-      },
-      tatkal_available: "Yes",
-      tatkal_booking_start_time: "11:00",
-      starting_station_state: "Maharashtra",
-      imageUrl: "https://images.unsplash.com/photo-1493397212122-2b85dda8106b?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1000&q=80",
-      route_id: "WR-04"
-    },
-    {
-      id: 11,
-      train_number: "12290",
-      train_name: "Nagpur - Duronto Express",
-      coaches: 17,
-      train_type: "Duronto",
-      from: "Mumbai",
-      to: "Nagpur",
-      starting_station: "Mumbai CST (CSTM)",
-      ending_station: "Nagpur Junction (NGP)",
-      intermediate_stops: [],
-      departureTime: "21:55",
-      arrivalTime: "08:45",
-      duration: "10h 50m",
-      days: ["Wed", "Fri", "Sun"],
-      classes: ["SL", "3A", "2A"],
-      totalSeats: 580,
-      availableSeats: 90,
-      fare: {
-        "SL": 650,
-        "3A": 1250,
-        "2A": 2150
-      },
-      tatkal_available: "Yes",
-      tatkal_booking_start_time: "11:00",
-      starting_station_state: "Maharashtra",
-      imageUrl: "https://images.unsplash.com/photo-1461749280684-dccba630e2f6?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1000&q=80",
-      route_id: "CR-01"
-    },
-    {
-      id: 12,
-      train_number: "12628",
-      train_name: "Karnataka Express",
-      coaches: 21,
-      train_type: "Superfast",
-      from: "Bangalore",
-      to: "Delhi",
-      starting_station: "KSR Bengaluru (SBC)",
-      ending_station: "New Delhi (NDLS)",
-      intermediate_stops: ["Dharmavaram", "Guntakal", "Secunderabad", "Nagpur", "Bhopal", "Jhansi", "Gwalior", "Agra"],
-      departureTime: "18:30",
-      arrivalTime: "06:20",
-      duration: "35h 50m",
-      days: ["Daily"],
-      classes: ["SL", "3A", "2A"],
-      totalSeats: 720,
-      availableSeats: 140,
-      fare: {
-        "SL": 800,
-        "3A": 1400,
-        "2A": 2500
-      },
-      tatkal_available: "Yes",
-      tatkal_booking_start_time: "10:15",
-      starting_station_state: "Karnataka",
-      imageUrl: "https://images.unsplash.com/photo-1531297484001-80022131f5a1?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1000&q=80",
-      route_id: "SWR-02"
-    },
-    {
-      id: 13,
-      train_number: "12655",
-      train_name: "Navjeevan Express",
-      coaches: 20,
-      train_type: "Superfast",
-      from: "Chennai",
-      to: "Ahmedabad",
-      starting_station: "Chennai Central (MAS)",
-      ending_station: "Ahmedabad Junction (ADI)",
-      intermediate_stops: ["Vijayawada", "Warangal", "Nagpur", "Bhopal", "Ratlam", "Vadodara"],
-      departureTime: "19:05",
-      arrivalTime: "16:50",
-      duration: "45h 45m",
-      days: ["Mon", "Wed", "Fri"],
-      classes: ["SL", "3A", "2A"],
-      totalSeats: 690,
-      availableSeats: 130,
-      fare: {
-        "SL": 850,
-        "3A": 1450,
-        "2A": 2550
-      },
-      tatkal_available: "Yes",
-      tatkal_booking_start_time: "11:00",
-      starting_station_state: "Tamil Nadu",
-      imageUrl: "https://images.unsplash.com/photo-1460925895917-afdab827c52f?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1000&q=80",
-      route_id: "SR-02"
-    },
-    {
-      id: 14,
-      train_number: "12839",
-      train_name: "Howrah - Chennai Mail",
-      coaches: 18,
-      train_type: "Mail Express",
-      from: "Howrah",
-      to: "Chennai",
-      starting_station: "Howrah Junction (HWH)",
-      ending_station: "Chennai Central (MAS)",
-      intermediate_stops: ["Kharagpur", "Bhubaneswar", "Visakhapatnam", "Rajahmundry", "Vijayawada", "Nellore"],
-      departureTime: "23:45",
-      arrivalTime: "17:00",
-      duration: "41h 15m",
-      days: ["Daily"],
-      classes: ["SL", "3A", "2A"],
-      totalSeats: 670,
-      availableSeats: 120,
-      fare: {
-        "SL": 780,
-        "3A": 1380,
-        "2A": 2480
-      },
+      Train_Number: 17658,
+      Train_Name: 'Hyderabad Shatabdi',
+      Coaches: 8,
+      imageUrl: "https://images.unsplash.com/photo-1527303361864-c228e3f25587?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=600&q=80",
+      availableSeats: 95,
       tatkal_available: "Yes",
       tatkal_booking_start_time: "10:30",
-      starting_station_state: "West Bengal",
-      imageUrl: "https://images.unsplash.com/photo-1487058792275-0ad4aaf24ca7?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1000&q=80",
-      route_id: "ER-02"
-    },
-    {
-      id: 15,
-      train_number: "22349",
-      train_name: "Patna - Secunderabad SF Express",
-      coaches: 19,
-      train_type: "Superfast",
-      from: "Patna",
-      to: "Secunderabad",
-      starting_station: "Patna Junction (PNBE)",
-      ending_station: "Secunderabad Junction (SC)",
-      intermediate_stops: ["Gaya", "Mughal Sarai", "Allahabad", "Satna", "Jabalpur", "Nagpur", "Warangal"],
-      departureTime: "09:30",
-      arrivalTime: "17:20",
-      duration: "31h 50m",
-      days: ["Sun", "Tue", "Thu"],
-      classes: ["SL", "3A", "2A"],
-      totalSeats: 660,
-      availableSeats: 140,
+      classes: ["AC", "General"],
       fare: {
-        "SL": 790,
-        "3A": 1390,
-        "2A": 2490
+        "AC": 1150,
+        "General": 550
       },
+      train_type: "Shatabdi",
+      days: ["Daily"]
+    },
+    {
+      Train_Number: 17659,
+      Train_Name: 'Delhi Duronto',
+      Coaches: 5,
+      imageUrl: "https://images.unsplash.com/photo-1493962853295-0fd70327578a?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1000&q=80",
+      availableSeats: 60,
       tatkal_available: "Yes",
-      tatkal_booking_start_time: "10:45",
-      starting_station_state: "Bihar",
-      imageUrl: "https://images.unsplash.com/photo-1474487548417-781cb71495f3?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1000&q=80",
-      route_id: "ECR-01"
-    }
-  ],
-  users: [
-    {
-      id: 1,
-      name: "Rahul Sharma",
-      email: "rahul@example.com",
-      phone: "9876543210",
-      bookings: [1, 3]
+      tatkal_booking_start_time: "10:00",
+      classes: ["AC"],
+      fare: {
+        "AC": 1800
+      },
+      train_type: "Duronto",
+      days: ["Mon", "Wed", "Fri"]
     },
     {
-      id: 2,
-      name: "Priya Patel",
-      email: "priya@example.com",
-      phone: "8765432109",
-      bookings: [2]
-    }
-  ],
-  bookings: [
-    {
-      id: 1,
-      userId: 1,
-      trainId: 1,
-      bookingDate: "2025-04-25",
-      journeyDate: "2025-05-15",
-      passengers: [
-        {
-          name: "Rahul Sharma",
-          age: 28,
-          gender: "Male",
-          seat: "B1-22",
-          status: "Confirmed"
-        },
-        {
-          name: "Neha Sharma",
-          age: 26,
-          gender: "Female",
-          seat: "B1-23",
-          status: "Confirmed"
-        }
-      ],
-      class: "3A",
-      pnr: "8456721890",
-      status: "Confirmed",
-      totalFare: 2450,
-      bookingType: "Regular"
+      Train_Number: 17660,
+      Train_Name: 'Kolkata Mail',
+      Coaches: 18,
+      imageUrl: "https://images.unsplash.com/photo-1517022812141-23620dba5c23?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1000&q=80",
+      availableSeats: 200,
+      tatkal_available: "Yes",
+      tatkal_booking_start_time: "10:30",
+      classes: ["Sleeper", "AC", "General"],
+      fare: {
+        "Sleeper": 700,
+        "AC": 1400,
+        "General": 350
+      },
+      train_type: "Mail",
+      days: ["Daily"]
     },
     {
-      id: 2,
-      userId: 2,
-      trainId: 2,
-      bookingDate: "2025-04-28",
-      journeyDate: "2025-05-20",
-      passengers: [
-        {
-          name: "Priya Patel",
-          age: 24,
-          gender: "Female",
-          seat: "C5-12",
-          status: "Confirmed"
-        }
-      ],
-      class: "EC",
-      pnr: "7651298340",
-      status: "Confirmed",
-      totalFare: 1650,
-      bookingType: "Regular"
+      Train_Number: 17661,
+      Train_Name: 'Pune Express',
+      Coaches: 14,
+      imageUrl: "https://images.unsplash.com/photo-1498050108023-c5249f4df085?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1000&q=80",
+      availableSeats: 180,
+      tatkal_available: "Yes",
+      tatkal_booking_start_time: "11:00",
+      classes: ["Sleeper", "AC", "General"],
+      fare: {
+        "Sleeper": 650,
+        "AC": 1200,
+        "General": 300
+      },
+      train_type: "Express",
+      days: ["Tue", "Thu", "Sat"]
     },
     {
-      id: 3,
-      userId: 1,
-      trainId: 4,
-      bookingDate: "2025-05-01",
-      journeyDate: "2025-05-25",
-      passengers: [
-        {
-          name: "Rahul Sharma",
-          age: 28,
-          gender: "Male",
-          seat: "Waitlist",
-          status: "Waitlisted"
-        }
-      ],
-      class: "EC",
-      pnr: "9823145670",
-      status: "Waitlisted",
-      totalFare: 1950,
-      bookingType: "Tatkal"
+      Train_Number: 17662,
+      Train_Name: 'Ahmedabad Local',
+      Coaches: 16,
+      imageUrl: "https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1000&q=80",
+      availableSeats: 300,
+      tatkal_available: "No",
+      tatkal_booking_start_time: "",
+      classes: ["Sleeper", "General"],
+      fare: {
+        "Sleeper": 500,
+        "General": 200
+      },
+      train_type: "Local",
+      days: ["Daily"]
     }
   ],
-  stations: [
-    { id: 1, name: "Delhi", code: "NDLS", state: "Delhi" },
-    { id: 2, name: "Mumbai", code: "CSTM", state: "Maharashtra" },
-    { id: 3, name: "Lucknow", code: "LKO", state: "Uttar Pradesh" },
-    { id: 4, name: "Ahmedabad", code: "ADI", state: "Gujarat" },
-    { id: 5, name: "Kolkata", code: "HWH", state: "West Bengal" },
-    { id: 6, name: "Chennai", code: "MAS", state: "Tamil Nadu" },
-    { id: 7, name: "Bangalore", code: "SBC", state: "Karnataka" },
-    { id: 8, name: "Hyderabad", code: "HYD", state: "Telangana" },
-    { id: 9, name: "Pune", code: "PUNE", state: "Maharashtra" },
-    { id: 10, name: "Jaipur", code: "JP", state: "Rajasthan" },
-    { id: 11, name: "Bhopal", code: "BPL", state: "Madhya Pradesh" },
-    { id: 12, name: "Patna", code: "PNBE", state: "Bihar" },
-    { id: 13, name: "Guwahati", code: "GHY", state: "Assam" },
-    { id: 14, name: "Trivandrum", code: "TVC", state: "Kerala" },
-    { id: 15, name: "Bhubaneswar", code: "BBS", state: "Odisha" },
-    { id: 16, name: "Nagpur", code: "NGP", state: "Maharashtra" },
-    { id: 17, name: "Vijayawada", code: "BZA", state: "Andhra Pradesh" },
-    { id: 18, name: "Chandigarh", code: "CDG", state: "Chandigarh" },
-    { id: 19, name: "Goa", code: "GOA", state: "Goa" },
-    { id: 20, name: "Gorakhpur", code: "GKP", state: "Uttar Pradesh" }
+  station: [
+    {
+      Station_Name: 'Chennai Central',
+      Station_Platform: 5
+    },
+    {
+      Station_Name: 'Mumbai Central',
+      Station_Platform: 3
+    },
+    {
+      Station_Name: 'Bangalore Junction',
+      Station_Platform: 4
+    },
+    {
+      Station_Name: 'Hyderabad Deccan',
+      Station_Platform: 2
+    },
+    {
+      Station_Name: 'Delhi Junction',
+      Station_Platform: 1
+    },
+    {
+      Station_Name: 'Kolkata Howrah',
+      Station_Platform: 3
+    },
+    {
+      Station_Name: 'Pune Junction',
+      Station_Platform: 4
+    },
+    {
+      Station_Name: 'Ahmedabad Junction',
+      Station_Platform: 2
+    }
   ],
-  tatkal_timings: [
-    { state: "Delhi", opening_time: "10:00" },
-    { state: "Maharashtra", opening_time: "11:00" },
-    { state: "Uttar Pradesh", opening_time: "10:15" },
-    { state: "Gujarat", opening_time: "10:30" },
-    { state: "West Bengal", opening_time: "10:30" },
-    { state: "Tamil Nadu", opening_time: "11:00" },
-    { state: "Karnataka", opening_time: "10:15" },
-    { state: "Telangana", opening_time: "10:30" },
-    { state: "Rajasthan", opening_time: "10:00" },
-    { state: "Madhya Pradesh", opening_time: "10:15" },
-    { state: "Bihar", opening_time: "10:45" },
-    { state: "Assam", opening_time: "10:45" },
-    { state: "Kerala", opening_time: "11:15" },
-    { state: "Odisha", opening_time: "10:30" },
-    { state: "Andhra Pradesh", opening_time: "10:30" },
-    { state: "Chandigarh", opening_time: "10:00" },
-    { state: "Goa", opening_time: "11:15" }
+  schedule: [
+    {
+      Train_Name: 'Chennai Express',
+      Train_Number: 17655,
+      Arrival_Time: '10:00:00',
+      Departure_Time: '10:30:00',
+      Duration: 30
+    },
+    {
+      Train_Name: 'Mumbai Superfast',
+      Train_Number: 17656,
+      Arrival_Time: '11:00:00',
+      Departure_Time: '11:30:00',
+      Duration: 30
+    },
+    {
+      Train_Name: 'Bangalore Rajdhani',
+      Train_Number: 17657,
+      Arrival_Time: '12:00:00',
+      Departure_Time: '12:30:00',
+      Duration: 30
+    },
+    {
+      Train_Name: 'Hyderabad Shatabdi',
+      Train_Number: 17658,
+      Arrival_Time: '13:00:00',
+      Departure_Time: '13:30:00',
+      Duration: 30
+    },
+    {
+      Train_Name: 'Delhi Duronto',
+      Train_Number: 17659,
+      Arrival_Time: '14:00:00',
+      Departure_Time: '14:30:00',
+      Duration: 30
+    },
+    {
+      Train_Name: 'Kolkata Mail',
+      Train_Number: 17660,
+      Arrival_Time: '15:00:00',
+      Departure_Time: '15:30:00',
+      Duration: 45
+    },
+    {
+      Train_Name: 'Pune Express',
+      Train_Number: 17661,
+      Arrival_Time: '16:00:00',
+      Departure_Time: '16:30:00',
+      Duration: 50
+    },
+    {
+      Train_Name: 'Ahmedabad Local',
+      Train_Number: 17662,
+      Arrival_Time: '17:00:00',
+      Departure_Time: '17:30:00',
+      Duration: 60
+    }
+  ],
+  route: [
+    {
+      Route_ID: 1,
+      Train_Number: 17655,
+      Starting_Station: 'Chennai Central',
+      End_Station: 'Mumbai Central',
+      Stops: 'Tambaram, Katpadi, Pune'
+    },
+    {
+      Route_ID: 2,
+      Train_Number: 17656,
+      Starting_Station: 'Mumbai Central',
+      End_Station: 'Bangalore Junction',
+      Stops: 'Pune, Satara, Belgaum'
+    },
+    {
+      Route_ID: 3,
+      Train_Number: 17657,
+      Starting_Station: 'Bangalore Junction',
+      End_Station: 'Hyderabad Deccan',
+      Stops: 'Kolar, Guntakal, Secunderabad'
+    },
+    {
+      Route_ID: 4,
+      Train_Number: 17658,
+      Starting_Station: 'Hyderabad Deccan',
+      End_Station: 'Delhi Junction',
+      Stops: 'Nagpur, Jhansi, Agra'
+    },
+    {
+      Route_ID: 5,
+      Train_Number: 17659,
+      Starting_Station: 'Chennai Central',
+      End_Station: 'Delhi Junction',
+      Stops: 'Vijayawada, Bhopal, Agra'
+    },
+    {
+      Route_ID: 6,
+      Train_Number: 17660,
+      Starting_Station: 'Mumbai Central',
+      End_Station: 'Delhi Junction',
+      Stops: 'Surat, Vadodara, Kota'
+    },
+    {
+      Route_ID: 7,
+      Train_Number: 17661,
+      Starting_Station: 'Bangalore Junction',
+      End_Station: 'Kolkata Howrah',
+      Stops: 'Chennai Central, Bhubaneswar, Howrah'
+    },
+    {
+      Route_ID: 8,
+      Train_Number: 17662,
+      Starting_Station: 'Chennai Central',
+      End_Station: 'Ahmedabad Junction',
+      Stops: 'Vijayawada, Surat, Vadodara'
+    }
+  ],
+  booking: [
+    {
+      Booking_ID: 'TK519155437H45',
+      Passenger_ID: 'SE646DFS84R',
+      Train_Number: 17655,
+      Date_of_Journey: '2025-03-10',
+      Source_Station: 'Chennai Central',
+      Destination_Station: 'Mumbai Central',
+      Booking_Status: 'Confirmed'
+    },
+    {
+      Booking_ID: 'TK519155437H46',
+      Passenger_ID: 'SE647DFS85R',
+      Train_Number: 17656,
+      Date_of_Journey: '2025-03-11',
+      Source_Station: 'Mumbai Central',
+      Destination_Station: 'Bangalore Junction',
+      Booking_Status: 'Waiting'
+    },
+    {
+      Booking_ID: 'TK519155437H47',
+      Passenger_ID: 'SE648DFS86R',
+      Train_Number: 17657,
+      Date_of_Journey: '2025-03-12',
+      Source_Station: 'Bangalore Junction',
+      Destination_Station: 'Hyderabad Deccan',
+      Booking_Status: 'Confirmed'
+    },
+    {
+      Booking_ID: 'TK519155437H48',
+      Passenger_ID: 'SE649DFS87R',
+      Train_Number: 17658,
+      Date_of_Journey: '2025-03-13',
+      Source_Station: 'Hyderabad Deccan',
+      Destination_Station: 'Delhi Junction',
+      Booking_Status: 'Cancelled'
+    },
+    {
+      Booking_ID: 'TK519155437H49',
+      Passenger_ID: 'SE650DFS88R',
+      Train_Number: 17659,
+      Date_of_Journey: '2025-03-14',
+      Source_Station: 'Chennai Central',
+      Destination_Station: 'Delhi Junction',
+      Booking_Status: 'Confirmed'
+    },
+    {
+      Booking_ID: 'TK519155437H50',
+      Passenger_ID: 'SE651DFS89R',
+      Train_Number: 17660,
+      Date_of_Journey: '2025-03-15',
+      Source_Station: 'Mumbai Central',
+      Destination_Station: 'Delhi Junction',
+      Booking_Status: 'Confirmed'
+    },
+    {
+      Booking_ID: 'TK519155437H51',
+      Passenger_ID: 'SE652DFS90R',
+      Train_Number: 17661,
+      Date_of_Journey: '2025-03-16',
+      Source_Station: 'Bangalore Junction',
+      Destination_Station: 'Kolkata Howrah',
+      Booking_Status: 'Waiting'
+    },
+    {
+      Booking_ID: 'TK519155437H52',
+      Passenger_ID: 'SE653DFS91R',
+      Train_Number: 17662,
+      Date_of_Journey: '2025-03-17',
+      Source_Station: 'Chennai Central',
+      Destination_Station: 'Ahmedabad Junction',
+      Booking_Status: 'Confirmed'
+    }
+  ],
+  ticket: [
+    {
+      PNR: '4405237957',
+      Booking_ID: 'TK519155437H45',
+      Seat_No: 'A1-21',
+      Berth_Type: 'Lower',
+      Class: 'AC',
+      Boarding_Point: 'Chennai Central'
+    },
+    {
+      PNR: '4405237958',
+      Booking_ID: 'TK519155437H46',
+      Seat_No: 'B2-22',
+      Berth_Type: 'Middle',
+      Class: 'Sleeper',
+      Boarding_Point: 'Mumbai Central'
+    },
+    {
+      PNR: '4405237959',
+      Booking_ID: 'TK519155437H47',
+      Seat_No: 'C3-23',
+      Berth_Type: 'Upper',
+      Class: 'General',
+      Boarding_Point: 'Bangalore Junction'
+    },
+    {
+      PNR: '4405237960',
+      Booking_ID: 'TK519155437H48',
+      Seat_No: 'D4-24',
+      Berth_Type: 'Lower',
+      Class: 'AC',
+      Boarding_Point: 'Hyderabad Deccan'
+    },
+    {
+      PNR: '4405237961',
+      Booking_ID: 'TK519155437H49',
+      Seat_No: 'E5-25',
+      Berth_Type: 'Middle',
+      Class: 'Sleeper',
+      Boarding_Point: 'Chennai Central'
+    },
+    {
+      PNR: '4405237962',
+      Booking_ID: 'TK519155437H50',
+      Seat_No: 'F6-26',
+      Berth_Type: 'Upper',
+      Class: 'AC',
+      Boarding_Point: 'Mumbai Central'
+    },
+    {
+      PNR: '4405237963',
+      Booking_ID: 'TK519155437H51',
+      Seat_No: 'G7-27',
+      Berth_Type: 'Lower',
+      Class: 'General',
+      Boarding_Point: 'Bangalore Junction'
+    },
+    {
+      PNR: '4405237964',
+      Booking_ID: 'TK519155437H52',
+      Seat_No: 'H8-28',
+      Berth_Type: 'Middle',
+      Class: 'AC',
+      Boarding_Point: 'Chennai Central'
+    }
+  ],
+  mybookings: [
+    {
+      MyBooking_ID: 1,
+      Passenger_ID: 'SE646DFS84R',
+      PNR: '4405237957',
+      Booking_Status: 'Confirmed'
+    },
+    {
+      MyBooking_ID: 2,
+      Passenger_ID: 'SE647DFS85R',
+      PNR: '4405237958',
+      Booking_Status: 'Waiting'
+    },
+    {
+      MyBooking_ID: 3,
+      Passenger_ID: 'SE648DFS86R',
+      PNR: '4405237959',
+      Booking_Status: 'Confirmed'
+    },
+    {
+      MyBooking_ID: 4,
+      Passenger_ID: 'SE649DFS87R',
+      PNR: '4405237960',
+      Booking_Status: 'Cancelled'
+    },
+    {
+      MyBooking_ID: 5,
+      Passenger_ID: 'SE650DFS88R',
+      PNR: '4405237961',
+      Booking_Status: 'Confirmed'
+    },
+    {
+      MyBooking_ID: 6,
+      Passenger_ID: 'SE651DFS89R',
+      PNR: '4405237962',
+      Booking_Status: 'Confirmed'
+    },
+    {
+      MyBooking_ID: 7,
+      Passenger_ID: 'SE652DFS90R',
+      PNR: '4405237963',
+      Booking_Status: 'Waiting'
+    },
+    {
+      MyBooking_ID: 8,
+      Passenger_ID: 'SE653DFS91R',
+      PNR: '4405237964',
+      Booking_Status: 'Confirmed'
+    }
+  ],
+  payment: [
+    {
+      Payment_ID: 1,
+      PNR: '4405237957',
+      Amount: 120.50,
+      Payment_Method: 'Credit Card',
+      Payment_Status: 'Received'
+    },
+    {
+      Payment_ID: 2,
+      PNR: '4405237958',
+      Amount: 80.00,
+      Payment_Method: 'Debit Card',
+      Payment_Status: 'Received'
+    },
+    {
+      Payment_ID: 3,
+      PNR: '4405237959',
+      Amount: 150.00,
+      Payment_Method: 'Net Banking',
+      Payment_Status: 'Received'
+    },
+    {
+      Payment_ID: 4,
+      PNR: '4405237960',
+      Amount: 100.00,
+      Payment_Method: 'UPI',
+      Payment_Status: 'Returned'
+    },
+    {
+      Payment_ID: 5,
+      PNR: '4405237961',
+      Amount: 90.00,
+      Payment_Method: 'Cash',
+      Payment_Status: 'Received'
+    },
+    {
+      Payment_ID: 6,
+      PNR: '4405237962',
+      Amount: 200.00,
+      Payment_Method: 'Credit Card',
+      Payment_Status: 'Received'
+    },
+    {
+      Payment_ID: 7,
+      PNR: '4405237963',
+      Amount: 75.50,
+      Payment_Method: 'Net Banking',
+      Payment_Status: 'Received'
+    },
+    {
+      Payment_ID: 8,
+      PNR: '4405237964',
+      Amount: 145.75,
+      Payment_Method: 'UPI',
+      Payment_Status: 'Received'
+    }
+  ],
+  cancellation: [
+    {
+      Cancellation_ID: 'CK8616HFC1685',
+      PNR: '4405237960',
+      Refund_Amount: 80.00
+    },
+    {
+      Cancellation_ID: 'CK8616HFC1686',
+      PNR: '4405237958',
+      Refund_Amount: 60.00
+    },
+    {
+      Cancellation_ID: 'CK8616HFC1687',
+      PNR: '4405237962',
+      Refund_Amount: 150.00
+    },
+    {
+      Cancellation_ID: 'CK8616HFC1688',
+      PNR: '4405237963',
+      Refund_Amount: 50.00
+    },
+    {
+      Cancellation_ID: 'CK8616HFC1689',
+      PNR: '4405237964',
+      Refund_Amount: 120.00
+    }
   ]
 };
 
@@ -646,7 +812,7 @@ export const runQuery = async (sql: string) => {
       // Extract table name (very simplified)
       const fromIndex = normalizedSql.indexOf("from");
       const tableNamePart = normalizedSql.slice(fromIndex + 4).trim().split(/\s+/)[0];
-      const tableName = tableNamePart.replace(';', '') as keyof typeof mockDatabaseData;
+      const tableName = tableNamePart.replace(';', '').replace('`', '').replace('`', '') as keyof typeof mockDatabaseData;
       
       // Handle WHERE clause for filtering (very simplified)
       if (normalizedSql.includes("where")) {
@@ -655,37 +821,132 @@ export const runQuery = async (sql: string) => {
         
         // Very basic parsing of WHERE conditions
         if (mockDatabaseData[tableName]) {
-          // Filter based on tatkal availability
-          if (whereClause.includes("tatkal_available") && whereClause.includes("yes")) {
-            return {
-              success: true,
-              data: mockDatabaseData[tableName].filter((item: any) => 
-                item.tatkal_available && item.tatkal_available.toLowerCase() === "yes"
-              ),
-              message: "Query executed successfully with tatkal filter."
-            };
-          }
-          
-          // Filter based on state
-          if (whereClause.includes("starting_station_state")) {
-            const stateMatch = whereClause.match(/starting_station_state\s*=\s*['"]([^'"]+)['"]/i);
-            if (stateMatch && stateMatch[1]) {
-              const state = stateMatch[1];
+          // Filter based on station name for trains
+          if (whereClause.includes("starting_station") || whereClause.includes("end_station")) {
+            const stationMatch = whereClause.match(/(starting_station|end_station)\s*=\s*['"]([^'"]+)['"]/i);
+            if (stationMatch && stationMatch[1] && stationMatch[2]) {
+              const field = stationMatch[1].toLowerCase();
+              const stationName = stationMatch[2];
+              
               return {
                 success: true,
-                data: mockDatabaseData[tableName].filter((item: any) => 
-                  item.starting_station_state && item.starting_station_state.toLowerCase() === state.toLowerCase()
-                ),
-                message: `Query executed successfully with state filter for ${state}.`
+                data: mockDatabaseData.route.filter((item: any) => {
+                  const matches = field === 'starting_station' 
+                    ? item.Starting_Station.toLowerCase() === stationName.toLowerCase()
+                    : item.End_Station.toLowerCase() === stationName.toLowerCase();
+                  
+                  if (matches) {
+                    // For each matching route, find the corresponding train details
+                    const trainNumber = item.Train_Number;
+                    const train = mockDatabaseData.train.find((t: any) => t.Train_Number === trainNumber);
+                    if (train) {
+                      // Return a combined object with route and train details
+                      return { ...item, ...train };
+                    }
+                  }
+                  return false;
+                }),
+                message: `Found trains with ${field === 'starting_station' ? 'origin' : 'destination'} station: ${stationName}`
               };
             }
           }
           
-          // If WHERE clause exists but we don't handle it specifically
+          // Filter based on train number
+          if (whereClause.includes("train_number")) {
+            const trainMatch = whereClause.match(/train_number\s*=\s*(\d+)/i);
+            if (trainMatch && trainMatch[1]) {
+              const trainNumber = parseInt(trainMatch[1]);
+              
+              if (tableName === 'train') {
+                const train = mockDatabaseData.train.find((t: any) => t.Train_Number === trainNumber);
+                return {
+                  success: !!train,
+                  data: train ? [train] : [],
+                  message: train ? `Found train with number: ${trainNumber}` : `No train found with number: ${trainNumber}`
+                };
+              }
+              
+              if (tableName === 'route') {
+                const routes = mockDatabaseData.route.filter((r: any) => r.Train_Number === trainNumber);
+                return {
+                  success: routes.length > 0,
+                  data: routes,
+                  message: routes.length > 0 ? `Found routes for train number: ${trainNumber}` : `No routes found for train number: ${trainNumber}`
+                };
+              }
+              
+              if (tableName === 'booking') {
+                const bookings = mockDatabaseData.booking.filter((b: any) => b.Train_Number === trainNumber);
+                return {
+                  success: bookings.length > 0,
+                  data: bookings,
+                  message: bookings.length > 0 ? `Found bookings for train number: ${trainNumber}` : `No bookings found for train number: ${trainNumber}`
+                };
+              }
+            }
+          }
+          
+          // Filter based on PNR for ticket
+          if (whereClause.includes("pnr")) {
+            const pnrMatch = whereClause.match(/pnr\s*=\s*['"]([^'"]+)['"]/i);
+            if (pnrMatch && pnrMatch[1]) {
+              const pnr = pnrMatch[1];
+              
+              const ticket = mockDatabaseData.ticket.find((t: any) => t.PNR === pnr);
+              if (ticket) {
+                // Find associated booking
+                const booking = mockDatabaseData.booking.find((b: any) => b.Booking_ID === ticket.Booking_ID);
+                
+                if (booking) {
+                  // Find passenger details
+                  const passenger = mockDatabaseData.passenger.find((p: any) => p.Passenger_ID === booking.Passenger_ID);
+                  
+                  // Find train details
+                  const train = mockDatabaseData.train.find((t: any) => t.Train_Number === booking.Train_Number);
+                  
+                  // Find route details
+                  const route = mockDatabaseData.route.find((r: any) => r.Train_Number === booking.Train_Number);
+                  
+                  // Get schedule
+                  const schedule = mockDatabaseData.schedule.find((s: any) => s.Train_Number === booking.Train_Number);
+                  
+                  // Get payment
+                  const payment = mockDatabaseData.payment.find((p: any) => p.PNR === pnr);
+                  
+                  // Get cancellation if any
+                  const cancellation = mockDatabaseData.cancellation.find((c: any) => c.PNR === pnr);
+                  
+                  const completeData = {
+                    ticket,
+                    booking,
+                    passenger,
+                    train,
+                    route,
+                    schedule,
+                    payment,
+                    cancellation
+                  };
+                  
+                  return {
+                    success: true,
+                    data: [completeData],
+                    message: `Found complete details for PNR: ${pnr}`
+                  };
+                }
+              }
+              
+              return {
+                success: false,
+                data: [],
+                message: `No ticket found for PNR: ${pnr}`
+              };
+            }
+          }
+          
           return {
             success: true,
             data: mockDatabaseData[tableName],
-            message: "Query executed successfully. WHERE clause partially supported."
+            message: `Query executed successfully. WHERE clause partially supported.`
           };
         }
       }
@@ -720,38 +981,95 @@ export const runQuery = async (sql: string) => {
   }
 };
 
-// Function to create a new booking
-export const createBooking = async (bookingData: any) => {
+// Function to get all stations
+export const getStations = () => {
+  return mockDatabaseData.station.map(station => ({
+    name: station.Station_Name,
+    code: station.Station_Name.substring(0, 3).toUpperCase(),
+    state: getStateFromStation(station.Station_Name)
+  }));
+};
+
+// Helper function to get state from station name
+function getStateFromStation(stationName: string) {
+  if (stationName.includes('Chennai')) return 'Tamil Nadu';
+  if (stationName.includes('Mumbai')) return 'Maharashtra';
+  if (stationName.includes('Bangalore')) return 'Karnataka';
+  if (stationName.includes('Hyderabad')) return 'Telangana';
+  if (stationName.includes('Delhi')) return 'Delhi';
+  if (stationName.includes('Kolkata') || stationName.includes('Howrah')) return 'West Bengal';
+  if (stationName.includes('Pune')) return 'Maharashtra';
+  if (stationName.includes('Ahmedabad')) return 'Gujarat';
+  return 'Unknown';
+}
+
+// Function to search trains
+export const searchTrains = (from: string, to: string, date: string) => {
   try {
-    // Generate a new booking ID
-    const newBookingId = mockDatabaseData.bookings.length + 1;
-    
-    // Generate a random PNR number
-    const pnr = Math.floor(Math.random() * 9000000000) + 1000000000;
-    
-    // Create new booking object
-    const newBooking = {
-      id: newBookingId,
-      pnr: pnr.toString(),
-      ...bookingData,
-      status: "Confirmed"
-    };
-    
-    // In a real app, this would save to the database
-    mockDatabaseData.bookings.push(newBooking);
-    
-    // Return the booking details
+    if (!from || !to) {
+      return {
+        success: false,
+        data: [],
+        message: "Both origin and destination stations are required"
+      };
+    }
+
+    // Find routes that match the origin and destination
+    const matchedRoutes = mockDatabaseData.route.filter(route => {
+      const fromMatch = route.Starting_Station.toLowerCase().includes(from.toLowerCase());
+      const toMatch = route.End_Station.toLowerCase().includes(to.toLowerCase());
+      return fromMatch && toMatch;
+    });
+
+    if (matchedRoutes.length === 0) {
+      return {
+        success: false,
+        data: [],
+        message: "No trains found for this route"
+      };
+    }
+
+    // Combine train and route data
+    const trains = matchedRoutes.map(route => {
+      const trainInfo = mockDatabaseData.train.find(t => t.Train_Number === route.Train_Number);
+      const scheduleInfo = mockDatabaseData.schedule.find(s => s.Train_Number === route.Train_Number);
+      
+      if (trainInfo && scheduleInfo) {
+        return {
+          id: trainInfo.Train_Number,
+          train_number: trainInfo.Train_Number.toString(),
+          train_name: trainInfo.Train_Name,
+          from: route.Starting_Station,
+          to: route.End_Station,
+          departureTime: scheduleInfo.Departure_Time.split(':').slice(0, 2).join(':'),
+          arrivalTime: scheduleInfo.Arrival_Time.split(':').slice(0, 2).join(':'),
+          duration: `${Math.floor(scheduleInfo.Duration / 60)}h ${scheduleInfo.Duration % 60}m`,
+          days: trainInfo.days || ["Daily"],
+          classes: trainInfo.classes,
+          availableSeats: trainInfo.availableSeats,
+          fare: trainInfo.fare,
+          tatkal_available: trainInfo.tatkal_available,
+          tatkal_booking_start_time: trainInfo.tatkal_booking_start_time,
+          imageUrl: trainInfo.imageUrl,
+          train_type: trainInfo.train_type
+        };
+      }
+      return null;
+    }).filter(Boolean);
+
     return {
-      success: true,
-      booking: newBooking,
-      message: "Booking created successfully"
+      success: trains.length > 0,
+      data: trains,
+      message: trains.length > 0 
+        ? `Found ${trains.length} train(s) for this route` 
+        : "No trains found for this route"
     };
   } catch (error) {
-    console.error("Error creating booking:", error);
+    console.error("Error searching trains:", error);
     return {
       success: false,
-      booking: null,
-      message: "Failed to create booking. See console for details."
+      data: [],
+      message: "Error searching for trains. See console for details."
     };
   }
 };
@@ -759,10 +1077,10 @@ export const createBooking = async (bookingData: any) => {
 // Function to get PNR status
 export const getPNRStatus = async (pnr: string) => {
   try {
-    // Find booking by PNR
-    const booking = mockDatabaseData.bookings.find(b => b.pnr === pnr);
+    // Find ticket by PNR
+    const ticket = mockDatabaseData.ticket.find(ticket => ticket.PNR === pnr);
     
-    if (!booking) {
+    if (!ticket) {
       return {
         success: false,
         booking: null,
@@ -770,21 +1088,59 @@ export const getPNRStatus = async (pnr: string) => {
       };
     }
     
-    // Find associated train
-    const train = mockDatabaseData.trains.find(t => t.id === booking.trainId);
+    // Find booking
+    const booking = mockDatabaseData.booking.find(booking => booking.Booking_ID === ticket.Booking_ID);
+    
+    if (!booking) {
+      return {
+        success: false,
+        booking: null,
+        message: "Booking details not found"
+      };
+    }
+    
+    // Find train
+    const train = mockDatabaseData.train.find(train => train.Train_Number === booking.Train_Number);
+    
+    if (!train) {
+      return {
+        success: false,
+        booking: null,
+        message: "Train details not found"
+      };
+    }
+    
+    // Find passenger
+    const passenger = mockDatabaseData.passenger.find(p => p.Passenger_ID === booking.Passenger_ID);
+    
+    // Find schedule
+    const schedule = mockDatabaseData.schedule.find(s => s.Train_Number === booking.Train_Number);
     
     return {
       success: true,
       booking: {
-        ...booking,
-        train: train ? {
-          name: train.train_name,
-          number: train.train_number,
-          from: train.from,
-          to: train.to,
-          departureTime: train.departureTime,
-          arrivalTime: train.arrivalTime
-        } : null
+        pnr: ticket.PNR,
+        status: booking.Booking_Status,
+        bookingDate: new Date(booking.Date_of_Journey).toLocaleDateString('en-GB').split('/').reverse().join('-'),
+        journeyDate: booking.Date_of_Journey,
+        class: ticket.Class,
+        passengers: [{
+          name: passenger ? `${passenger.First_Name} ${passenger.Last_Name}` : "Passenger",
+          age: passenger ? passenger.Age : 30,
+          gender: passenger ? passenger.Gender : "Male",
+          seat: ticket.Seat_No,
+          status: booking.Booking_Status
+        }],
+        train: {
+          name: train.Train_Name,
+          number: train.Train_Number.toString(),
+          from: booking.Source_Station,
+          to: booking.Destination_Station,
+          departureTime: schedule ? schedule.Departure_Time.split(':').slice(0, 2).join(':') : "06:00",
+          arrivalTime: schedule ? schedule.Arrival_Time.split(':').slice(0, 2).join(':') : "12:00"
+        },
+        bookingType: "Regular",
+        totalFare: 500
       },
       message: "PNR status retrieved successfully"
     };
@@ -798,36 +1154,119 @@ export const getPNRStatus = async (pnr: string) => {
   }
 };
 
-// Function to search trains
-export const searchTrains = (from: string, to: string, date: string) => {
+// Function to create a new booking
+export const createBooking = async (bookingData: any) => {
   try {
-    // Filter trains that match the route
-    const trains = mockDatabaseData.trains.filter(train => {
-      return (train.from.toLowerCase() === from.toLowerCase() || 
-             train.starting_station.toLowerCase().includes(from.toLowerCase())) && 
-             (train.to.toLowerCase() === to.toLowerCase() || 
-             train.ending_station.toLowerCase().includes(to.toLowerCase()));
-    });
+    // Generate a new Booking ID with prefix TK
+    const bookingId = `TK${Math.floor(Math.random() * 1000000000)}H${Math.floor(Math.random() * 100)}`;
     
-    if (trains.length === 0) {
+    // Generate a random PNR number (10 digits)
+    const pnr = Math.floor(Math.random() * 9000000000 + 1000000000).toString();
+    
+    // Create passenger ID
+    const passengerId = `SE${Math.floor(Math.random() * 1000)}DFS${Math.floor(Math.random() * 100)}R`;
+    
+    // Get the train details
+    const train = mockDatabaseData.train.find(train => train.Train_Number === bookingData.trainId);
+    
+    // Get route details
+    const route = mockDatabaseData.route.find(route => route.Train_Number === bookingData.trainId);
+    
+    if (!train || !route) {
       return {
         success: false,
-        data: [],
-        message: "No trains found for this route"
+        booking: null,
+        message: "Train details not found"
       };
     }
     
+    // Create passenger entries for each passenger
+    const passengers = bookingData.passengers.map((p: any) => ({
+      Passenger_ID: `SE${Math.floor(Math.random() * 1000)}DFS${Math.floor(Math.random() * 100)}R`,
+      First_Name: p.name.split(' ')[0],
+      Last_Name: p.name.includes(' ') ? p.name.split(' ').slice(1).join(' ') : 'Passenger',
+      Email: `passenger${Math.floor(Math.random() * 10000)}@example.com`,
+      Gender: p.gender,
+      Age: p.age,
+      Phone_Number: `${Math.floor(Math.random() * 9000000000) + 1000000000}`
+    }));
+    
+    // Add passengers to the mock database
+    mockDatabaseData.passenger.push(...passengers);
+    
+    // Create booking entry
+    const booking = {
+      Booking_ID: bookingId,
+      Passenger_ID: passengers[0].Passenger_ID,
+      Train_Number: bookingData.trainId,
+      Date_of_Journey: bookingData.journeyDate,
+      Source_Station: route.Starting_Station,
+      Destination_Station: route.End_Station,
+      Booking_Status: 'Confirmed'
+    };
+    
+    // Add booking to the mock database
+    mockDatabaseData.booking.push(booking);
+    
+    // Create ticket entry
+    const ticket = {
+      PNR: pnr,
+      Booking_ID: bookingId,
+      Seat_No: `${bookingData.class[0]}-${Math.floor(Math.random() * 50) + 1}`,
+      Berth_Type: ['Lower', 'Middle', 'Upper'][Math.floor(Math.random() * 3)] as 'Lower' | 'Middle' | 'Upper',
+      Class: bookingData.class,
+      Boarding_Point: route.Starting_Station
+    };
+    
+    // Add ticket to the mock database
+    mockDatabaseData.ticket.push(ticket);
+    
+    // Create mybooking entry
+    const mybooking = {
+      MyBooking_ID: mockDatabaseData.mybookings.length + 1,
+      Passenger_ID: passengers[0].Passenger_ID,
+      PNR: pnr,
+      Booking_Status: 'Confirmed'
+    };
+    
+    // Add mybooking to the mock database
+    mockDatabaseData.mybookings.push(mybooking);
+    
+    // Create payment entry
+    const payment = {
+      Payment_ID: mockDatabaseData.payment.length + 1,
+      PNR: pnr,
+      Amount: bookingData.totalFare,
+      Payment_Method: ['Credit Card', 'Debit Card', 'Net Banking', 'UPI'][Math.floor(Math.random() * 4)] as 'Credit Card' | 'Debit Card' | 'Net Banking' | 'UPI',
+      Payment_Status: 'Received'
+    };
+    
+    // Add payment to the mock database
+    mockDatabaseData.payment.push(payment);
+    
+    // Return the booking details
     return {
       success: true,
-      data: trains,
-      message: `Found ${trains.length} trains for this route`
+      booking: {
+        pnr,
+        bookingId,
+        status: 'Confirmed',
+        train: train.Train_Name,
+        from: route.Starting_Station,
+        to: route.End_Station,
+        date: bookingData.journeyDate,
+        passengers: bookingData.passengers,
+        class: bookingData.class,
+        totalFare: bookingData.totalFare
+      },
+      message: "Booking created successfully"
     };
   } catch (error) {
-    console.error("Error searching trains:", error);
+    console.error("Error creating booking:", error);
     return {
       success: false,
-      data: [],
-      message: "Error searching for trains. See console for details."
+      booking: null,
+      message: "Failed to create booking. See console for details."
     };
   }
 };

@@ -87,8 +87,8 @@ const PNRStatus = () => {
     }
   };
   
-  // Sample PNRs for testing: 8456721890, 7651298340, 9823145670
-  const samplePnrs = ['8456721890', '7651298340', '9823145670'];
+  // Sample PNRs for testing from our database
+  const samplePnrs = ['4405237957', '4405237958', '4405237959', '4405237960', '4405237961'];
 
   return (
     <div className="min-h-screen flex flex-col">
@@ -155,7 +155,9 @@ const PNRStatus = () => {
                       <span className={`text-sm px-3 py-1 rounded-full ${
                         pnrDetails.status === 'Confirmed' 
                           ? 'bg-green-100 text-green-800' 
-                          : 'bg-amber-100 text-amber-800'
+                          : pnrDetails.status === 'Waiting'
+                          ? 'bg-amber-100 text-amber-800'
+                          : 'bg-red-100 text-red-800'
                       }`}>
                         {pnrDetails.status}
                       </span>
@@ -255,7 +257,9 @@ const PNRStatus = () => {
                                   <span className={`px-2 py-1 rounded-full text-xs ${
                                     passenger.status === 'Confirmed' 
                                       ? 'bg-green-100 text-green-800' 
-                                      : 'bg-amber-100 text-amber-800'
+                                      : passenger.status === 'Waiting'
+                                      ? 'bg-amber-100 text-amber-800'
+                                      : 'bg-red-100 text-red-800'
                                   }`}>
                                     {passenger.status}
                                   </span>
@@ -271,7 +275,10 @@ const PNRStatus = () => {
                 
                 {pnrDetails.status === 'Confirmed' && (
                   <div className="flex justify-end">
-                    <Button>
+                    <Button onClick={() => toast({
+                      title: "E-Ticket Generated",
+                      description: "Your E-ticket has been generated and can be printed."
+                    })}>
                       <Ticket className="mr-2 h-4 w-4" />
                       Print E-Ticket
                     </Button>

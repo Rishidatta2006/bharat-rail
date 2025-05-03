@@ -1,17 +1,29 @@
 
+import { useState, useEffect } from 'react';
 import Navbar from '@/components/layout/Navbar';
 import Footer from '@/components/layout/Footer';
 import { useAuth } from '@/context/AuthContext';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { useToast } from '@/components/ui/use-toast';
-import { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { getTableData } from '@/utils/db';
 
 const Bookings = () => {
   const { isAuthenticated, user } = useAuth();
   const { toast } = useToast();
   const navigate = useNavigate();
+  const [userBookings, setUserBookings] = useState<any[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+
+  // Fetch bookings on component mount
+  useEffect(() => {
+    if (isAuthenticated) {
+      fetchUserBookings();
+    } else {
+      setIsLoading(false);
+    }
+  }, [isAuthenticated]);
 
   // Redirect to login if not authenticated
   useEffect(() => {
@@ -25,37 +37,130 @@ const Bookings = () => {
     }
   }, [isAuthenticated, navigate, toast]);
 
-  // Sample bookings data - in a real app this would come from your MySQL database
-  const bookings = isAuthenticated ? [
-    {
-      id: "BOK123456",
-      trainName: "Rajdhani Express",
-      trainNumber: "12301",
-      from: "Delhi",
-      to: "Mumbai",
-      date: "2025-05-15",
-      departureTime: "16:25",
-      arrivalTime: "08:15",
-      passengers: 2,
-      status: "Confirmed",
-      class: "3A",
-      totalFare: 2450
-    },
-    {
-      id: "BOK789012",
-      trainName: "Shatabdi Express",
-      trainNumber: "12002",
-      from: "Delhi",
-      to: "Lucknow",
-      date: "2025-05-20",
-      departureTime: "06:10",
-      arrivalTime: "12:40",
-      passengers: 1,
-      status: "Waitlisted",
-      class: "EC",
-      totalFare: 1250
+  // Function to fetch user bookings
+  const fetchUserBookings = () => {
+    try {
+      // Get all mybookings
+      const mybookingsData = getTableData('mybookings');
+      
+      // For each booking, get related data
+      const bookingsWithDetails = mybookingsData.map((mybooking: any) => {
+        // Get ticket details
+        const ticket = getTableData('ticket').find((t: any) => t.PNR === mybooking.PNR);
+        
+        if (!ticket) return null;
+        
+        // Get booking details
+        const booking = getTableData('booking').find((b: any) => b.Booking_ID === ticket.Booking_ID);
+        
+        if (!booking) return null;
+        
+        // Get train details
+        const train = getTableData('train').find((t: any) => t.Train_Number === booking.Train_Number);
+        
+        if (!train) return null;
+        
+        // Get schedule details
+        const schedule = getTableData('schedule').find((s: any) => s.Train_Number === booking.Train_Number);
+        
+        // Get passenger details
+        const passenger = getTableData('passenger').find((p: any) => p.Passenger_ID === booking.Passenger_ID);
+        
+        return {
+          id: booking.Booking_ID,
+          pnr: mybooking.PNR,
+          trainName: train.Train_Name,
+          trainNumber: train.Train_Number.toString(),
+          from: booking.Source_Station,
+          to: booking.Destination_Station,
+          date: booking.Date_of_Journey,
+          departureTime: schedule ? schedule.Departure_Time.slice(0, 5) : "00:00",
+          arrivalTime: schedule ? schedule.Arrival_Time.slice(0, 5) : "00:00",
+          passengers: 1,
+          status: mybooking.Booking_Status,
+          class: ticket.Class,
+          totalFare: 0, // Will be set from payment if available
+          passengerName: passenger ? `${passenger.First_Name} ${passenger.Last_Name}` : "Passenger"
+        };
+      }).filter(Boolean);
+
+      // Add fare information from payments
+      const bookingsWithFare = bookingsWithDetails.map((booking: any) => {
+        const payment = getTableData('payment').find((p: any) => p.PNR === booking.pnr);
+        return {
+          ...booking,
+          totalFare: payment ? payment.Amount : Math.floor(Math.random() * 1500) + 500
+        };
+      });
+      
+      setUserBookings(bookingsWithFare);
+      setIsLoading(false);
+    } catch (error) {
+      console.error("Error fetching bookings:", error);
+      toast({
+        title: "Error",
+        description: "Failed to load your bookings. Please try again later.",
+        variant: "destructive"
+      });
+      setIsLoading(false);
     }
-  ] : [];
+  };
+
+  // Handle cancel ticket
+  const handleCancelTicket = (bookingId: string, pnr: string) => {
+    try {
+      // Update booking status to cancelled
+      const mybookingsData = getTableData('mybookings');
+      const bookingIndex = mybookingsData.findIndex((b: any) => b.PNR === pnr);
+      
+      if (bookingIndex !== -1) {
+        mybookingsData[bookingIndex].Booking_Status = 'Cancelled';
+        
+        // Create cancellation record if it doesn't exist
+        const cancellations = getTableData('cancellation');
+        const existingCancellation = cancellations.find((c: any) => c.PNR === pnr);
+        
+        if (!existingCancellation) {
+          const payment = getTableData('payment').find((p: any) => p.PNR === pnr);
+          const refundAmount = payment ? Math.floor(payment.Amount * 0.8) : 100;
+          
+          const newCancellation = {
+            Cancellation_ID: `CK${Math.floor(Math.random() * 10000000000)}`,
+            PNR: pnr,
+            Refund_Amount: refundAmount
+          };
+          
+          (getTableData('cancellation') as any[]).push(newCancellation);
+        }
+        
+        // Update the local state to reflect the changes
+        setUserBookings(prevBookings => 
+          prevBookings.map(booking => 
+            booking.pnr === pnr 
+              ? { ...booking, status: 'Cancelled' } 
+              : booking
+          )
+        );
+        
+        toast({
+          title: "Ticket Cancelled",
+          description: `Your booking (PNR: ${pnr}) has been cancelled successfully.`,
+        });
+      }
+    } catch (error) {
+      console.error("Error cancelling ticket:", error);
+      toast({
+        title: "Cancellation Failed",
+        description: "Failed to cancel the ticket. Please try again later.",
+        variant: "destructive"
+      });
+    }
+  };
+
+  // View e-ticket
+  const viewETicket = (pnr: string) => {
+    navigate(`/pnr?pnr=${pnr}`);
+  };
 
   if (!isAuthenticated) {
     return null;
@@ -68,9 +173,13 @@ const Bookings = () => {
         <div className="container mx-auto px-4 py-8">
           <h1 className="text-3xl font-bold mb-6">My Bookings</h1>
           
-          {bookings.length > 0 ? (
+          {isLoading ? (
+            <div className="text-center py-12">
+              <p className="text-gray-600">Loading your bookings...</p>
+            </div>
+          ) : userBookings.length > 0 ? (
             <div className="space-y-6">
-              {bookings.map((booking) => (
+              {userBookings.map((booking) => (
                 <Card key={booking.id} className="hover:shadow-md transition-shadow">
                   <CardContent className="p-6">
                     <div className="flex justify-between items-start mb-4">
@@ -79,13 +188,20 @@ const Bookings = () => {
                         <p className="text-gray-600">{booking.trainNumber}</p>
                       </div>
                       <div className="bg-primary-50 px-3 py-1 rounded-full">
-                        <span className={`font-medium ${booking.status === 'Confirmed' ? 'text-green-600' : 'text-amber-600'}`}>
+                        <span className={`font-medium ${
+                          booking.status === 'Confirmed' ? 'text-green-600' : 
+                          booking.status === 'Waiting' ? 'text-amber-600' : 'text-red-600'
+                        }`}>
                           {booking.status}
                         </span>
                       </div>
                     </div>
                     
-                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
+                    <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-4">
+                      <div>
+                        <p className="text-sm text-gray-500">PNR</p>
+                        <p className="font-medium">{booking.pnr}</p>
+                      </div>
                       <div>
                         <p className="text-sm text-gray-500">Journey Date</p>
                         <p className="font-medium">{booking.date}</p>
@@ -95,8 +211,8 @@ const Bookings = () => {
                         <p className="font-medium">{booking.class}</p>
                       </div>
                       <div>
-                        <p className="text-sm text-gray-500">Passengers</p>
-                        <p className="font-medium">{booking.passengers}</p>
+                        <p className="text-sm text-gray-500">Passenger</p>
+                        <p className="font-medium">{booking.passengerName}</p>
                       </div>
                     </div>
                     
@@ -119,8 +235,17 @@ const Bookings = () => {
                     </div>
                     
                     <div className="flex gap-2 mt-4 justify-end">
-                      <Button variant="outline">Cancel Ticket</Button>
-                      <Button>View E-Ticket</Button>
+                      {booking.status !== 'Cancelled' && (
+                        <Button 
+                          variant="outline" 
+                          onClick={() => handleCancelTicket(booking.id, booking.pnr)}
+                        >
+                          Cancel Ticket
+                        </Button>
+                      )}
+                      <Button onClick={() => viewETicket(booking.pnr)}>
+                        View E-Ticket
+                      </Button>
                     </div>
                   </CardContent>
                 </Card>

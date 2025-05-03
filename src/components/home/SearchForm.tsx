@@ -17,45 +17,87 @@ import {
 } from '@/components/ui/popover';
 import { Calendar } from '@/components/ui/calendar';
 import { format } from 'date-fns';
-import { Calendar as CalendarIcon, Search } from 'lucide-react';
+import { Calendar as CalendarIcon, Search, ChevronDown } from 'lucide-react';
 import { cn } from '@/lib/utils';
+import { useNavigate } from 'react-router-dom';
+import { useToast } from '@/components/ui/use-toast';
+import {
+  Sheet,
+  SheetContent,
+  SheetDescription,
+  SheetHeader,
+  SheetTitle,
+  SheetTrigger,
+} from "@/components/ui/sheet";
+import { Checkbox } from "@/components/ui/checkbox";
+import { getStations } from '@/utils/db';
 
 const SearchForm = () => {
+  const navigate = useNavigate();
+  const { toast } = useToast();
   const [date, setDate] = useState<Date>();
+  const [fromStation, setFromStation] = useState('');
+  const [toStation, setToStation] = useState('');
+  const [travelClass, setTravelClass] = useState('');
+  const [quota, setQuota] = useState('GN');
+  
+  // Advanced options state
+  const [flexibleDates, setFlexibleDates] = useState(false);
+  const [showDirectTrains, setShowDirectTrains] = useState(false);
+  const [includeTatkal, setIncludeTatkal] = useState(true);
+  
+  // Get stations from the database
+  const stations = getStations();
   
   const popularCities = [
-    { value: "delhi", label: "Delhi" },
-    { value: "mumbai", label: "Mumbai" },
-    { value: "chennai", label: "Chennai" },
-    { value: "kolkata", label: "Kolkata" },
-    { value: "bangalore", label: "Bangalore" },
-    { value: "hyderabad", label: "Hyderabad" },
-    { value: "ahmedabad", label: "Ahmedabad" },
-    { value: "pune", label: "Pune" }
+    "Chennai Central",
+    "Mumbai Central", 
+    "Bangalore Junction",
+    "Hyderabad Deccan",
+    "Delhi Junction",
+    "Kolkata Howrah",
+    "Pune Junction",
+    "Ahmedabad Junction"
   ];
 
   const travelClasses = [
-    { value: "SL", label: "Sleeper Class (SL)" },
-    { value: "3A", label: "AC 3 Tier (3A)" },
-    { value: "2A", label: "AC 2 Tier (2A)" },
-    { value: "1A", label: "AC First Class (1A)" },
-    { value: "CC", label: "Chair Car (CC)" },
-    { value: "EC", label: "Executive Class (EC)" }
+    { value: "Sleeper", label: "Sleeper Class" },
+    { value: "AC", label: "AC Class" },
+    { value: "General", label: "General Class" }
   ];
 
   const quotas = [
     { value: "GN", label: "General Quota (GN)" },
     { value: "TQ", label: "Tatkal Quota (TQ)" },
-    { value: "PT", label: "Premium Tatkal (PT)" },
     { value: "LD", label: "Ladies Quota (LD)" },
     { value: "DF", label: "Defense Quota (DF)" },
-    { value: "FT", label: "Foreign Tourist Quota (FT)" }
+    { value: "SR", label: "Senior Citizen Quota (SR)" }
   ];
 
   const handleSubmit = (event: React.FormEvent) => {
     event.preventDefault();
-    // Handle search submission here
     console.log('Search form submitted');
+    
+    if (!fromStation || !toStation) {
+      toast({
+        title: "Missing Information",
+        description: "Please select both from and to stations",
+        variant: "destructive"
+      });
+      return;
+    }
+    
+    if (fromStation === toStation) {
+      toast({
+        title: "Invalid Selection",
+        description: "Origin and destination stations cannot be the same",
+        variant: "destructive"
+      });
+      return;
+    }
+    
+    // Navigate to trains page with query parameters
+    navigate(`/trains?from=${encodeURIComponent(fromStation)}&to=${encodeURIComponent(toStation)}${date ? `&date=${format(date, 'yyyy-MM-dd')}` : ''}${travelClass ? `&class=${travelClass}` : ''}&quota=${quota}`);
   };
 
   return (
@@ -66,13 +108,13 @@ const SearchForm = () => {
             {/* From Station */}
             <div className="space-y-2">
               <label className="text-sm font-medium">From Station</label>
-              <Select>
+              <Select value={fromStation} onValueChange={setFromStation}>
                 <SelectTrigger>
                   <SelectValue placeholder="Select origin" />
                 </SelectTrigger>
                 <SelectContent>
                   {popularCities.map((city) => (
-                    <SelectItem key={city.value} value={city.value}>{city.label}</SelectItem>
+                    <SelectItem key={city} value={city}>{city}</SelectItem>
                   ))}
                 </SelectContent>
               </Select>
@@ -81,13 +123,13 @@ const SearchForm = () => {
             {/* To Station */}
             <div className="space-y-2">
               <label className="text-sm font-medium">To Station</label>
-              <Select>
+              <Select value={toStation} onValueChange={setToStation}>
                 <SelectTrigger>
                   <SelectValue placeholder="Select destination" />
                 </SelectTrigger>
                 <SelectContent>
                   {popularCities.map((city) => (
-                    <SelectItem key={city.value} value={city.value}>{city.label}</SelectItem>
+                    <SelectItem key={city} value={city}>{city}</SelectItem>
                   ))}
                 </SelectContent>
               </Select>
@@ -125,7 +167,7 @@ const SearchForm = () => {
             {/* Class */}
             <div className="space-y-2">
               <label className="text-sm font-medium">Class</label>
-              <Select>
+              <Select value={travelClass} onValueChange={setTravelClass}>
                 <SelectTrigger>
                   <SelectValue placeholder="Select class" />
                 </SelectTrigger>
@@ -149,7 +191,7 @@ const SearchForm = () => {
           <div className="mt-4 flex flex-wrap gap-4">
             <div className="flex items-center">
               <span className="text-sm font-medium mr-2">Quota:</span>
-              <Select defaultValue="GN">
+              <Select value={quota} onValueChange={setQuota}>
                 <SelectTrigger className="w-[180px] h-8">
                   <SelectValue />
                 </SelectTrigger>
@@ -162,7 +204,120 @@ const SearchForm = () => {
             </div>
             
             <div className="ml-auto flex items-center">
-              <Button variant="link" className="text-primary-500">Advanced Options</Button>
+              <Sheet>
+                <SheetTrigger asChild>
+                  <Button variant="link" className="text-primary-500 flex items-center">
+                    Advanced Options <ChevronDown className="h-4 w-4 ml-1" />
+                  </Button>
+                </SheetTrigger>
+                <SheetContent>
+                  <SheetHeader>
+                    <SheetTitle>Advanced Search Options</SheetTitle>
+                    <SheetDescription>
+                      Customize your train search with these additional options.
+                    </SheetDescription>
+                  </SheetHeader>
+                  <div className="py-4 space-y-6">
+                    <div className="flex items-center space-x-2">
+                      <Checkbox 
+                        id="flexible-dates"
+                        checked={flexibleDates}
+                        onCheckedChange={(checked) => setFlexibleDates(checked as boolean)}
+                      />
+                      <label
+                        htmlFor="flexible-dates"
+                        className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+                      >
+                        Flexible with dates (±3 days)
+                      </label>
+                    </div>
+                    
+                    <div className="flex items-center space-x-2">
+                      <Checkbox 
+                        id="direct-trains"
+                        checked={showDirectTrains}
+                        onCheckedChange={(checked) => setShowDirectTrains(checked as boolean)}
+                      />
+                      <label
+                        htmlFor="direct-trains"
+                        className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+                      >
+                        Show only direct trains
+                      </label>
+                    </div>
+                    
+                    <div className="flex items-center space-x-2">
+                      <Checkbox 
+                        id="include-tatkal"
+                        checked={includeTatkal}
+                        onCheckedChange={(checked) => setIncludeTatkal(checked as boolean)}
+                      />
+                      <label
+                        htmlFor="include-tatkal"
+                        className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+                      >
+                        Include tatkal booking options
+                      </label>
+                    </div>
+                    
+                    <div className="space-y-2">
+                      <label className="text-sm font-medium">Preferred Train Type</label>
+                      <div className="grid grid-cols-2 gap-2">
+                        <div className="flex items-center space-x-2">
+                          <Checkbox id="train-rajdhani" />
+                          <label htmlFor="train-rajdhani" className="text-sm">Rajdhani</label>
+                        </div>
+                        <div className="flex items-center space-x-2">
+                          <Checkbox id="train-shatabdi" />
+                          <label htmlFor="train-shatabdi" className="text-sm">Shatabdi</label>
+                        </div>
+                        <div className="flex items-center space-x-2">
+                          <Checkbox id="train-duronto" />
+                          <label htmlFor="train-duronto" className="text-sm">Duronto</label>
+                        </div>
+                        <div className="flex items-center space-x-2">
+                          <Checkbox id="train-superfast" />
+                          <label htmlFor="train-superfast" className="text-sm">Superfast</label>
+                        </div>
+                        <div className="flex items-center space-x-2">
+                          <Checkbox id="train-express" />
+                          <label htmlFor="train-express" className="text-sm">Express</label>
+                        </div>
+                        <div className="flex items-center space-x-2">
+                          <Checkbox id="train-passenger" />
+                          <label htmlFor="train-passenger" className="text-sm">Passenger</label>
+                        </div>
+                      </div>
+                    </div>
+                    
+                    <div className="space-y-2">
+                      <label className="text-sm font-medium">Preferred Departure Time</label>
+                      <div className="grid grid-cols-2 gap-2">
+                        <div className="flex items-center space-x-2">
+                          <Checkbox id="time-morning" />
+                          <label htmlFor="time-morning" className="text-sm">Morning (4 AM - 10 AM)</label>
+                        </div>
+                        <div className="flex items-center space-x-2">
+                          <Checkbox id="time-day" />
+                          <label htmlFor="time-day" className="text-sm">Day (10 AM - 4 PM)</label>
+                        </div>
+                        <div className="flex items-center space-x-2">
+                          <Checkbox id="time-evening" />
+                          <label htmlFor="time-evening" className="text-sm">Evening (4 PM - 10 PM)</label>
+                        </div>
+                        <div className="flex items-center space-x-2">
+                          <Checkbox id="time-night" />
+                          <label htmlFor="time-night" className="text-sm">Night (10 PM - 4 AM)</label>
+                        </div>
+                      </div>
+                    </div>
+                    
+                    <Button onClick={() => toast({title: "Advanced options applied", description: "Your search will include these preferences"})}>
+                      Apply Preferences
+                    </Button>
+                  </div>
+                </SheetContent>
+              </Sheet>
             </div>
           </div>
         </form>
