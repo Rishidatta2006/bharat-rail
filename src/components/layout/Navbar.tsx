@@ -1,15 +1,33 @@
 
 import { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Search, User, Menu, X } from 'lucide-react';
 import { cn } from '@/lib/utils';
+import { useAuth } from '@/context/AuthContext';
 
 const Navbar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const { isAuthenticated, logout } = useAuth();
+  const navigate = useNavigate();
 
   const toggleMenu = () => {
     setIsMenuOpen(!isMenuOpen);
+  };
+
+  const handleLoginClick = () => {
+    navigate('/login');
+    if (isMenuOpen) setIsMenuOpen(false);
+  };
+
+  const handleLogoutClick = () => {
+    logout();
+    if (isMenuOpen) setIsMenuOpen(false);
+  };
+
+  const handleBookNowClick = () => {
+    navigate('/trains');
+    if (isMenuOpen) setIsMenuOpen(false);
   };
 
   return (
@@ -43,13 +61,19 @@ const Navbar = () => {
         </nav>
 
         <div className="hidden lg:flex items-center gap-4">
-          <Button variant="outline" size="icon">
+          <Button variant="outline" size="icon" onClick={() => navigate('/trains')}>
             <Search className="h-4 w-4" />
           </Button>
-          <Button variant="outline">
-            <User className="h-4 w-4 mr-2" /> Login
-          </Button>
-          <Button className="bg-primary-500 hover:bg-primary-600">Book Now</Button>
+          {isAuthenticated ? (
+            <Button variant="outline" onClick={handleLogoutClick}>
+              <User className="h-4 w-4 mr-2" /> Logout
+            </Button>
+          ) : (
+            <Button variant="outline" onClick={handleLoginClick}>
+              <User className="h-4 w-4 mr-2" /> Login
+            </Button>
+          )}
+          <Button className="bg-primary-500 hover:bg-primary-600" onClick={handleBookNowClick}>Book Now</Button>
         </div>
 
         {/* Mobile menu button */}
@@ -82,10 +106,16 @@ const Navbar = () => {
             Contact
           </Link>
           <div className="border-t border-border my-2"></div>
-          <Button variant="outline" className="justify-start">
-            <User className="h-4 w-4 mr-2" /> Login
-          </Button>
-          <Button className="bg-primary-500 hover:bg-primary-600">Book Now</Button>
+          {isAuthenticated ? (
+            <Button variant="outline" className="justify-start" onClick={handleLogoutClick}>
+              <User className="h-4 w-4 mr-2" /> Logout
+            </Button>
+          ) : (
+            <Button variant="outline" className="justify-start" onClick={handleLoginClick}>
+              <User className="h-4 w-4 mr-2" /> Login
+            </Button>
+          )}
+          <Button className="bg-primary-500 hover:bg-primary-600" onClick={handleBookNowClick}>Book Now</Button>
         </nav>
       </div>
     </header>

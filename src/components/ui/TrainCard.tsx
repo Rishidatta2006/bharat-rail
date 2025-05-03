@@ -3,6 +3,8 @@ import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardFooter } from '@/components/ui/card';
 import { TrainFront, Clock } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
+import { useToast } from '@/components/ui/use-toast';
 
 interface Train {
   id: number;
@@ -23,6 +25,18 @@ interface TrainCardProps {
 }
 
 const TrainCard = ({ train }: TrainCardProps) => {
+  const navigate = useNavigate();
+  const { toast } = useToast();
+  
+  const handleCheckAvailability = () => {
+    toast({
+      title: "Checking availability",
+      description: `Checking seats for ${train.name} (${train.number})`,
+    });
+    // In a real app, this would navigate to a booking page or show a modal
+    // For now, we'll simulate it with a toast
+  };
+
   return (
     <Card className="overflow-hidden hover:shadow-lg transition-shadow">
       <div className="relative h-48 overflow-hidden">
@@ -78,7 +92,7 @@ const TrainCard = ({ train }: TrainCardProps) => {
       
       <CardFooter className="px-6 py-4 bg-gray-50 border-t border-gray-100 flex justify-between">
         <span className="text-green-600 font-medium">Available</span>
-        <Button>Check Availability</Button>
+        <Button onClick={handleCheckAvailability}>Check Availability</Button>
       </CardFooter>
     </Card>
   );

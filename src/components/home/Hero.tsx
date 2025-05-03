@@ -1,8 +1,11 @@
 
 import { Button } from '@/components/ui/button';
 import { TrainFront } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
 
 const Hero = () => {
+  const navigate = useNavigate();
+  
   return (
     <div className="relative bg-gradient-to-r from-primary-600 to-primary-800 text-white overflow-hidden">
       {/* Decorative train pattern background */}
@@ -25,10 +28,19 @@ const Hero = () => {
               Book train tickets seamlessly with our modern reservation platform. Experience comfort, reliability, and the joy of train travel.
             </p>
             <div className="mt-8 flex flex-wrap gap-4 animate-fade-in" style={{ animationDelay: '0.4s' }}>
-              <Button size="lg" className="bg-secondary-500 hover:bg-secondary-600 text-white">
+              <Button 
+                size="lg" 
+                className="bg-secondary-500 hover:bg-secondary-600 text-white"
+                onClick={() => navigate('/trains')}
+              >
                 Book Tickets
               </Button>
-              <Button size="lg" variant="outline" className="border-white text-white hover:bg-white hover:text-primary-600">
+              <Button 
+                size="lg" 
+                variant="outline" 
+                className="border-white text-white hover:bg-white hover:text-primary-600"
+                onClick={() => navigate('/trains')}
+              >
                 Explore Routes
               </Button>
             </div>
