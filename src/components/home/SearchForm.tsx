@@ -49,17 +49,6 @@ const SearchForm = () => {
   // Get stations from the database
   const stations = getStations();
   
-  const popularCities = [
-    "Chennai Central",
-    "Mumbai Central", 
-    "Bangalore Junction",
-    "Hyderabad Deccan",
-    "Delhi Junction",
-    "Kolkata Howrah",
-    "Pune Junction",
-    "Ahmedabad Junction"
-  ];
-
   const travelClasses = [
     { value: "Sleeper", label: "Sleeper Class" },
     { value: "AC", label: "AC Class" },
@@ -100,6 +89,9 @@ const SearchForm = () => {
     navigate(`/trains?from=${encodeURIComponent(fromStation)}&to=${encodeURIComponent(toStation)}${date ? `&date=${format(date, 'yyyy-MM-dd')}` : ''}${travelClass ? `&class=${travelClass}` : ''}&quota=${quota}`);
   };
 
+  // Get station names from the database
+  const stationNames = stations.map(station => station.Station_Name);
+
   return (
     <Card className="border-none shadow-lg relative z-20 -mt-12 md:-mt-24">
       <CardContent className="p-6">
@@ -113,8 +105,8 @@ const SearchForm = () => {
                   <SelectValue placeholder="Select origin" />
                 </SelectTrigger>
                 <SelectContent>
-                  {popularCities.map((city) => (
-                    <SelectItem key={city} value={city}>{city}</SelectItem>
+                  {stationNames.map((station) => (
+                    <SelectItem key={station} value={station}>{station}</SelectItem>
                   ))}
                 </SelectContent>
               </Select>
@@ -128,8 +120,8 @@ const SearchForm = () => {
                   <SelectValue placeholder="Select destination" />
                 </SelectTrigger>
                 <SelectContent>
-                  {popularCities.map((city) => (
-                    <SelectItem key={city} value={city}>{city}</SelectItem>
+                  {stationNames.map((station) => (
+                    <SelectItem key={station} value={station}>{station}</SelectItem>
                   ))}
                 </SelectContent>
               </Select>
@@ -203,6 +195,7 @@ const SearchForm = () => {
               </Select>
             </div>
             
+            {/* Advanced Options */}
             <div className="ml-auto flex items-center">
               <Sheet>
                 <SheetTrigger asChild>
