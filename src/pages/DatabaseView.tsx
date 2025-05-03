@@ -1,14 +1,26 @@
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Navbar from '@/components/layout/Navbar';
 import Footer from '@/components/layout/Footer';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { Badge } from '@/components/ui/badge';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { useToast } from '@/components/ui/use-toast';
-import { Database, Table, ListFilter } from 'lucide-react';
+import { Database, Table, ListFilter, Filter, Search } from 'lucide-react';
 import { getTableData, runQuery, mockDatabaseData } from '@/utils/db';
+import {
+  Table as UITable,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from '@/components/ui/table';
 
 const DatabaseView = () => {
   const [activeTab, setActiveTab] = useState<keyof typeof mockDatabaseData>('trains');
@@ -16,6 +28,11 @@ const DatabaseView = () => {
   const [queryResult, setQueryResult] = useState<any[]>([]);
   const [queryMessage, setQueryMessage] = useState<string>('');
   const [isLoading, setIsLoading] = useState(false);
+  const [filters, setFilters] = useState({
+    state: '',
+    tatkalAvailable: '',
+    tatkalTime: ''
+  });
   
   const { toast } = useToast();
   
@@ -68,6 +85,43 @@ const DatabaseView = () => {
     }
   };
 
+  // Apply filters to trains data
+  const applyFilters = () => {
+    let query = "SELECT * FROM trains";
+    const conditions = [];
+    
+    if (filters.state) {
+      conditions.push(`starting_station_state = '${filters.state}'`);
+    }
+    
+    if (filters.tatkalAvailable) {
+      conditions.push(`tatkal_available = '${filters.tatkalAvailable}'`);
+    }
+    
+    if (filters.tatkalTime) {
+      conditions.push(`tatkal_booking_start_time = '${filters.tatkalTime}'`);
+    }
+    
+    if (conditions.length > 0) {
+      query += " WHERE " + conditions.join(" AND ");
+    }
+    
+    query += ";";
+    
+    setSqlQuery(query);
+    handleExecuteQuery();
+  };
+
+  // Get unique states
+  const uniqueStates = Array.from(
+    new Set(mockDatabaseData.trains.map((train: any) => train.starting_station_state))
+  ).filter(Boolean);
+  
+  // Get unique tatkal times
+  const uniqueTatkalTimes = Array.from(
+    new Set(mockDatabaseData.trains.map((train: any) => train.tatkal_booking_start_time))
+  ).filter(Boolean);
+
   // Helper function to render table data
   const renderTableData = (data: any[]) => {
     if (!data || data.length === 0) {
@@ -78,26 +132,28 @@ const DatabaseView = () => {
     
     return (
       <div className="overflow-x-auto">
-        <table className="w-full border-collapse">
-          <thead>
-            <tr className="bg-muted">
+        <UITable>
+          <TableHeader>
+            <TableRow>
               {columns.map(column => (
-                <th key={column} className="border p-2 text-left">{column}</th>
+                <TableHead key={column} className="whitespace-nowrap">{column}</TableHead>
               ))}
-            </tr>
-          </thead>
-          <tbody>
+            </TableRow>
+          </TableHeader>
+          <TableBody>
             {data.map((row, rowIndex) => (
-              <tr key={rowIndex} className="border-b hover:bg-muted/50">
+              <TableRow key={rowIndex}>
                 {columns.map(column => (
-                  <td key={`${rowIndex}-${column}`} className="border-x p-2">
-                    {typeof row[column] === 'object' ? JSON.stringify(row[column]) : row[column]}
-                  </td>
+                  <TableCell key={`${rowIndex}-${column}`} className="p-2 align-top">
+                    {typeof row[column] === 'object' 
+                      ? JSON.stringify(row[column]) 
+                      : String(row[column])}
+                  </TableCell>
                 ))}
-              </tr>
+              </TableRow>
             ))}
-          </tbody>
-        </table>
+          </TableBody>
+        </UITable>
       </div>
     );
   };
@@ -155,6 +211,11 @@ const DatabaseView = () => {
                     <TabsTrigger value="query">
                       <Database className="h-4 w-4 mr-1" /> SQL Query
                     </TabsTrigger>
+                    {activeTab === 'trains' && (
+                      <TabsTrigger value="filter">
+                        <Filter className="h-4 w-4 mr-1" /> Filter
+                      </TabsTrigger>
+                    )}
                   </TabsList>
                 </div>
               </CardHeader>
@@ -192,10 +253,117 @@ const DatabaseView = () => {
                     )}
                   </div>
                 </TabsContent>
+                <TabsContent value="filter" className="mt-0">
+                  <Card>
+                    <CardHeader>
+                      <CardTitle className="text-lg flex items-center">
+                        <Filter className="h-4 w-4 mr-2" />
+                        Filter Trains
+                      </CardTitle>
+                    </CardHeader>
+                    <CardContent>
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                        <div className="space-y-2">
+                          <Label htmlFor="state">Starting Station State</Label>
+                          <Select 
+                            value={filters.state} 
+                            onValueChange={(value) => setFilters({...filters, state: value})}
+                          >
+                            <SelectTrigger id="state">
+                              <SelectValue placeholder="Select state" />
+                            </SelectTrigger>
+                            <SelectContent>
+                              <SelectItem value="">All States</SelectItem>
+                              {uniqueStates.map((state) => (
+                                <SelectItem key={state} value={state}>{state}</SelectItem>
+                              ))}
+                            </SelectContent>
+                          </Select>
+                        </div>
+                        
+                        <div className="space-y-2">
+                          <Label htmlFor="tatkal">Tatkal Availability</Label>
+                          <Select 
+                            value={filters.tatkalAvailable} 
+                            onValueChange={(value) => setFilters({...filters, tatkalAvailable: value})}
+                          >
+                            <SelectTrigger id="tatkal">
+                              <SelectValue placeholder="Tatkal availability" />
+                            </SelectTrigger>
+                            <SelectContent>
+                              <SelectItem value="">All</SelectItem>
+                              <SelectItem value="Yes">Available</SelectItem>
+                              <SelectItem value="No">Not Available</SelectItem>
+                            </SelectContent>
+                          </Select>
+                        </div>
+                      </div>
+                      
+                      <div className="space-y-2 mb-6">
+                        <Label htmlFor="tatkalTime">Tatkal Booking Time</Label>
+                        <Select 
+                          value={filters.tatkalTime} 
+                          onValueChange={(value) => setFilters({...filters, tatkalTime: value})}
+                        >
+                          <SelectTrigger id="tatkalTime">
+                            <SelectValue placeholder="Select booking time" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            <SelectItem value="">All Times</SelectItem>
+                            {uniqueTatkalTimes.map((time) => (
+                              <SelectItem key={time} value={time}>{time}</SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
+                      </div>
+                      
+                      <Button 
+                        onClick={applyFilters} 
+                        className="w-full"
+                      >
+                        <Search className="mr-2 h-4 w-4" />
+                        Apply Filters
+                      </Button>
+                      
+                      {queryMessage && queryResult.length > 0 && (
+                        <div className="mt-4">
+                          <div className="flex items-center justify-between mb-2">
+                            <h3 className="font-medium">Filter Results:</h3>
+                            <Badge variant="outline" className="ml-2">
+                              {queryResult.length} trains found
+                            </Badge>
+                          </div>
+                          {renderTableData(queryResult)}
+                        </div>
+                      )}
+                    </CardContent>
+                  </Card>
+                </TabsContent>
               </CardContent>
             </Tabs>
           </Card>
         </div>
+        
+        {/* Documentation Panel */}
+        <Card className="mt-6">
+          <CardHeader>
+            <CardTitle className="text-lg">Tatkal Booking System</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <p className="text-muted-foreground mb-4">
+              This feature aims to reduce server congestion and improve fairness for users across different regions by distributing Tatkal booking load across different time slots based on the train's starting station state.
+            </p>
+            
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+              {mockDatabaseData.tatkal_timings.map((timing, index) => (
+                <div key={index} className="flex justify-between p-2 border rounded">
+                  <span className="font-medium">{timing.state}</span>
+                  <span>{timing.opening_time} AM</span>
+                </div>
+              ))}
+            </div>
+          </CardContent>
+        </Card>
       </main>
       <Footer />
     </div>
