@@ -14,6 +14,7 @@ import Bookings from "./pages/Bookings";
 import PNRStatus from "./pages/PNRStatus";
 import Contact from "./pages/Contact";
 import Login from "./pages/Login";
+import DatabaseView from "./pages/DatabaseView";
 
 const queryClient = new QueryClient();
 
@@ -45,6 +46,7 @@ const App = () => {
               <Route path="/pnr" element={<PNRStatus />} />
               <Route path="/contact" element={<Contact />} />
               <Route path="/login" element={<Login />} />
+              <Route path="/database" element={<DatabaseView />} />
               {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
               <Route path="*" element={<NotFound />} />
             </Routes>
