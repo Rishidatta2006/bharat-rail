@@ -22,8 +22,12 @@ import {
   TableRow,
 } from '@/components/ui/table';
 
+// Define a type for the valid table names in the database
+type TableName = keyof typeof mockDatabaseData;
+
 const DatabaseView = () => {
-  const [activeTab, setActiveTab] = useState<string>("train");
+  // Initialize activeTab with a valid table name from mockDatabaseData
+  const [activeTab, setActiveTab] = useState<TableName>("train");
   const [sqlQuery, setSqlQuery] = useState<string>('SELECT * FROM train;');
   const [queryResult, setQueryResult] = useState<any[]>([]);
   const [queryMessage, setQueryMessage] = useState<string>('');
@@ -185,7 +189,7 @@ const DatabaseView = () => {
                     key={table}
                     variant={table === activeTab ? "default" : "outline"} 
                     className="w-full justify-start"
-                    onClick={() => setActiveTab(table)}
+                    onClick={() => setActiveTab(table as TableName)} // Cast to TableName
                   >
                     <div className="flex items-center">
                       <Table className="h-4 w-4 mr-2" />
