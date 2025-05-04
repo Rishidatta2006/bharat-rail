@@ -1,6 +1,7 @@
 
 import { useState, useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import Navbar from '@/components/layout/Navbar';
 import Footer from '@/components/layout/Footer';
 import { Input } from '@/components/ui/input';
@@ -10,6 +11,7 @@ import { toast } from '@/components/ui/use-toast';
 import TrainCard from '@/components/ui/TrainCard';
 import { searchTrains, getStations } from '@/utils/db';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { ExternalLink } from 'lucide-react';
 
 const Trains = () => {
   const location = useLocation();
@@ -36,7 +38,9 @@ const Trains = () => {
   const travelClasses = [
     { value: "Sleeper", label: "Sleeper Class" },
     { value: "AC", label: "AC Class" },
-    { value: "General", label: "General Class" }
+    { value: "General", label: "General Class" },
+    { value: "AC Chair Car", label: "AC Chair Car" },
+    { value: "Executive", label: "Executive Class" }
   ];
 
   const quotas = [
@@ -75,7 +79,7 @@ const Trains = () => {
       if (result.success) {
         // Filter by class if selected
         let filteredResults = result.data;
-        if (travelClass) {
+        if (travelClass && travelClass !== 'any') {
           filteredResults = filteredResults.filter((train: any) => 
             train.classes.includes(travelClass)
           );
@@ -201,6 +205,21 @@ const Trains = () => {
                     </Button>
                   </div>
                 </div>
+                
+                {quota === 'TQ' && (
+                  <div className="mt-4 bg-yellow-50 border border-yellow-200 p-3 rounded-md">
+                    <div className="flex items-center justify-between">
+                      <div className="text-sm text-yellow-800">
+                        Looking for Tatkal tickets? Check our dedicated Tatkal page for state-wise booking times.
+                      </div>
+                      <Link to="/tatkal">
+                        <Button variant="outline" size="sm" className="flex items-center gap-1">
+                          View Tatkal <ExternalLink className="h-3 w-3" />
+                        </Button>
+                      </Link>
+                    </div>
+                  </div>
+                )}
               </CardContent>
             </Card>
           </div>
@@ -234,7 +253,7 @@ const Trains = () => {
             <div className="space-y-8">
               <h2 className="text-2xl font-bold mb-6">Popular Trains</h2>
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-                {[17655, 17656, 17657].map((trainNumber) => {
+                {[17660, 17661, 17662].map((trainNumber) => {
                   const trainInfo = searchTrains('', '', '').data.find((t: any) => t.id === trainNumber);
                   return trainInfo ? <TrainCard key={trainInfo.id} train={trainInfo} /> : null;
                 })}

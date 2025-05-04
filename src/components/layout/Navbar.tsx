@@ -1,33 +1,45 @@
-
 import { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Search, User, Menu, X } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useAuth } from '@/context/AuthContext';
+import { useMobile } from '@/hooks/useMobile';
 
 const Navbar = () => {
-  const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const { isAuthenticated, logout } = useAuth();
+  const isMobile = useMobile();
+  const location = useLocation();
   const navigate = useNavigate();
 
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+
+  const menuItems = [
+    { name: "Home", path: "/" },
+    { name: "Find Trains", path: "/trains" },
+    { name: "My Bookings", path: "/bookings" },
+    { name: "PNR Status", path: "/pnr-status" },
+    { name: "Tatkal Booking", path: "/tatkal" },
+    { name: "Database", path: "/database" },
+    { name: "Contact", path: "/contact" },
+  ];
+
   const toggleMenu = () => {
-    setIsMenuOpen(!isMenuOpen);
+    setIsMobileMenuOpen(!isMobileMenuOpen);
   };
 
   const handleLoginClick = () => {
     navigate('/login');
-    if (isMenuOpen) setIsMenuOpen(false);
+    if (isMobileMenuOpen) setIsMobileMenuOpen(false);
   };
 
   const handleLogoutClick = () => {
     logout();
-    if (isMenuOpen) setIsMenuOpen(false);
+    if (isMobileMenuOpen) setIsMobileMenuOpen(false);
   };
 
   const handleBookNowClick = () => {
     navigate('/trains');
-    if (isMenuOpen) setIsMenuOpen(false);
+    if (isMobileMenuOpen) setIsMobileMenuOpen(false);
   };
 
   return (
@@ -78,7 +90,7 @@ const Navbar = () => {
 
         {/* Mobile menu button */}
         <Button variant="ghost" size="icon" className="lg:hidden" onClick={toggleMenu}>
-          {isMenuOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
+          {isMobileMenuOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
         </Button>
       </div>
 
@@ -86,25 +98,15 @@ const Navbar = () => {
       <div 
         className={cn(
           "fixed inset-0 bg-white z-40 lg:hidden pt-16 px-4",
-          isMenuOpen ? "flex flex-col" : "hidden"
+          isMobileMenuOpen ? "flex flex-col" : "hidden"
         )}
       >
         <nav className="flex flex-col gap-4 py-4">
-          <Link to="/" className="text-lg font-medium p-2 hover:bg-muted rounded-md" onClick={toggleMenu}>
-            Home
-          </Link>
-          <Link to="/trains" className="text-lg font-medium p-2 hover:bg-muted rounded-md" onClick={toggleMenu}>
-            Trains
-          </Link>
-          <Link to="/bookings" className="text-lg font-medium p-2 hover:bg-muted rounded-md" onClick={toggleMenu}>
-            My Bookings
-          </Link>
-          <Link to="/pnr" className="text-lg font-medium p-2 hover:bg-muted rounded-md" onClick={toggleMenu}>
-            PNR Status
-          </Link>
-          <Link to="/contact" className="text-lg font-medium p-2 hover:bg-muted rounded-md" onClick={toggleMenu}>
-            Contact
-          </Link>
+          {menuItems.map((item, index) => (
+            <Link key={index} to={item.path} className="text-lg font-medium p-2 hover:bg-muted rounded-md" onClick={toggleMenu}>
+              {item.name}
+            </Link>
+          ))}
           <div className="border-t border-border my-2"></div>
           {isAuthenticated ? (
             <Button variant="outline" className="justify-start" onClick={handleLogoutClick}>

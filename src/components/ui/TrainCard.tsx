@@ -19,6 +19,7 @@ import { useToast } from '@/components/ui/use-toast';
 import { TrainFront, Clock, Calendar, User, Ticket } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { createBooking } from '@/utils/db';
+import ETicket from './ETicket';
 
 interface Train {
   id: number;
@@ -61,6 +62,10 @@ const TrainCard = ({ train }: TrainCardProps) => {
   ]);
   const [journeyDate, setJourneyDate] = useState('');
   const [isBooking, setIsBooking] = useState(false);
+  
+  // New state for e-ticket display
+  const [isTicketOpen, setIsTicketOpen] = useState(false);
+  const [ticketData, setTicketData] = useState<any>(null);
 
   // Get the actual train name and number using fallbacks
   const trainName = train.train_name || train.name || '';
@@ -164,9 +169,36 @@ const TrainCard = ({ train }: TrainCardProps) => {
           title: "Booking Successful!",
           description: `PNR: ${result.booking.pnr}. Your ticket has been booked.`,
         });
+        
+        // Set ticket data for viewing
+        setTicketData({
+          pnr: result.booking.pnr,
+          train: {
+            name: trainName,
+            number: trainNumber,
+            from: train.from,
+            to: train.to,
+            departureTime: train.departureTime,
+            arrivalTime: train.arrivalTime
+          },
+          bookingDate: new Date().toLocaleDateString(),
+          journeyDate: journeyDate,
+          passengers: bookingData.passengers.map((p: any, index: number) => ({
+            ...p,
+            seat: `${selectedClass[0]}${Math.floor(Math.random() * 10) + 1}-${index + 11}`
+          })),
+          class: selectedClass,
+          coach: `${selectedClass[0]}${Math.floor(Math.random() * 10) + 1}`,
+          status: 'Confirmed',
+          fareDetails: {
+            baseFare: calculateTotalFare(),
+            gst: Math.round(calculateTotalFare() * 0.05),
+            total: Math.round(calculateTotalFare() * 1.05)
+          }
+        });
+        
         setIsDialogOpen(false);
-        // Navigate to bookings page after successful booking
-        navigate('/bookings');
+        setIsTicketOpen(true);
       } else {
         toast({
           title: "Booking Failed",
@@ -423,6 +455,15 @@ const TrainCard = ({ train }: TrainCardProps) => {
           </DialogFooter>
         </DialogContent>
       </Dialog>
+
+      {/* E-Ticket View */}
+      {ticketData && (
+        <ETicket 
+          isOpen={isTicketOpen}
+          onClose={() => setIsTicketOpen(false)}
+          ticket={ticketData}
+        />
+      )}
     </>
   );
 };

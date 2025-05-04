@@ -1,4 +1,3 @@
-
 // MySQL database integration utility
 
 import { toast } from "@/components/ui/use-toast";
@@ -201,7 +200,7 @@ export const mockDatabaseData = {
       Train_Number: 17655,
       Train_Name: 'Chennai Express',
       Coaches: 10,
-      imageUrl: "https://images.unsplash.com/photo-1535535112387-56ffe8db21ff?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1000&q=80",
+      imageUrl: "https://images.unsplash.com/photo-1601210462440-33a900f414e5?q=80&w=1000&auto=format&fit=crop",
       availableSeats: 120,
       tatkal_available: "Yes",
       tatkal_booking_start_time: "10:00",
@@ -218,10 +217,10 @@ export const mockDatabaseData = {
       Train_Number: 17656,
       Train_Name: 'Mumbai Superfast',
       Coaches: 12,
-      imageUrl: "https://images.unsplash.com/photo-1573413154008-87b37a7d04a3?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1000&q=80",
+      imageUrl: "https://images.unsplash.com/photo-1552619252-3dca5d6c1278?q=80&w=1000&auto=format&fit=crop",
       availableSeats: 80,
       tatkal_available: "Yes",
-      tatkal_booking_start_time: "11:00",
+      tatkal_booking_start_time: "10:30",
       classes: ["Sleeper", "AC", "General"],
       fare: {
         "Sleeper": 850,
@@ -235,10 +234,10 @@ export const mockDatabaseData = {
       Train_Number: 17657,
       Train_Name: 'Bangalore Rajdhani',
       Coaches: 15,
-      imageUrl: "https://images.unsplash.com/photo-1540544660406-6a69dacb2804?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=600&q=80",
+      imageUrl: "https://images.unsplash.com/photo-1540544660406-6a69dacb2804?q=80&w=1000&auto=format&fit=crop",
       availableSeats: 150,
       tatkal_available: "Yes",
-      tatkal_booking_start_time: "10:15",
+      tatkal_booking_start_time: "11:00",
       classes: ["Sleeper", "AC"],
       fare: {
         "Sleeper": 900,
@@ -251,10 +250,10 @@ export const mockDatabaseData = {
       Train_Number: 17658,
       Train_Name: 'Hyderabad Shatabdi',
       Coaches: 8,
-      imageUrl: "https://images.unsplash.com/photo-1527303361864-c228e3f25587?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=600&q=80",
+      imageUrl: "https://images.unsplash.com/photo-1503387837-b154d5074bd2?q=80&w=1000&auto=format&fit=crop",
       availableSeats: 95,
       tatkal_available: "Yes",
-      tatkal_booking_start_time: "10:30",
+      tatkal_booking_start_time: "11:30",
       classes: ["AC", "General"],
       fare: {
         "AC": 1150,
@@ -267,10 +266,10 @@ export const mockDatabaseData = {
       Train_Number: 17659,
       Train_Name: 'Delhi Duronto',
       Coaches: 5,
-      imageUrl: "https://images.unsplash.com/photo-1493962853295-0fd70327578a?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1000&q=80",
+      imageUrl: "https://images.unsplash.com/photo-1582556828808-36e118ce497e?q=80&w=1000&auto=format&fit=crop",
       availableSeats: 60,
       tatkal_available: "Yes",
-      tatkal_booking_start_time: "10:00",
+      tatkal_booking_start_time: "10:15",
       classes: ["AC"],
       fare: {
         "AC": 1800
@@ -280,52 +279,50 @@ export const mockDatabaseData = {
     },
     {
       Train_Number: 17660,
-      Train_Name: 'Kolkata Mail',
+      Train_Name: 'Vande Bharat Express',
       Coaches: 18,
-      imageUrl: "https://images.unsplash.com/photo-1517022812141-23620dba5c23?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1000&q=80",
+      imageUrl: "https://images.unsplash.com/photo-1548024769-83f53c1a34f7?q=80&w=1000&auto=format&fit=crop",
       availableSeats: 200,
       tatkal_available: "Yes",
-      tatkal_booking_start_time: "10:30",
-      classes: ["Sleeper", "AC", "General"],
+      tatkal_booking_start_time: "10:45",
+      classes: ["AC Chair Car", "Executive"],
       fare: {
-        "Sleeper": 700,
-        "AC": 1400,
-        "General": 350
+        "AC Chair Car": 1200,
+        "Executive": 2000
       },
-      train_type: "Mail",
+      train_type: "Vande Bharat",
       days: ["Daily"]
     },
     {
       Train_Number: 17661,
-      Train_Name: 'Pune Express',
+      Train_Name: 'Tejas Express',
       Coaches: 14,
-      imageUrl: "https://images.unsplash.com/photo-1498050108023-c5249f4df085?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1000&q=80",
+      imageUrl: "https://images.unsplash.com/photo-1558260250-a1a4ddc2581a?q=80&w=1000&auto=format&fit=crop",
       availableSeats: 180,
       tatkal_available: "Yes",
-      tatkal_booking_start_time: "11:00",
-      classes: ["Sleeper", "AC", "General"],
+      tatkal_booking_start_time: "11:15",
+      classes: ["AC Chair Car", "Executive"],
       fare: {
-        "Sleeper": 650,
-        "AC": 1200,
-        "General": 300
+        "AC Chair Car": 1100,
+        "Executive": 1900
       },
-      train_type: "Express",
+      train_type: "Tejas",
       days: ["Tue", "Thu", "Sat"]
     },
     {
       Train_Number: 17662,
-      Train_Name: 'Ahmedabad Local',
+      Train_Name: 'Gatimaan Express',
       Coaches: 16,
-      imageUrl: "https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1000&q=80",
+      imageUrl: "https://images.unsplash.com/photo-1581089769785-340c94cea921?q=80&w=1000&auto=format&fit=crop",
       availableSeats: 300,
-      tatkal_available: "No",
-      tatkal_booking_start_time: "",
-      classes: ["Sleeper", "General"],
+      tatkal_available: "Yes",
+      tatkal_booking_start_time: "11:45",
+      classes: ["AC Chair Car", "Executive"],
       fare: {
-        "Sleeper": 500,
-        "General": 200
+        "AC Chair Car": 1050,
+        "Executive": 1850
       },
-      train_type: "Local",
+      train_type: "Gatimaan",
       days: ["Daily"]
     }
   ],
@@ -1003,21 +1000,59 @@ function getStateFromStation(stationName: string) {
   return 'Unknown';
 }
 
+// Add new table for tatkal timings by state
+export const tatkalTimingsByState = {
+  'Tamil Nadu': '10:00',
+  'Maharashtra': '10:30',
+  'Karnataka': '11:00',
+  'Telangana': '11:30',
+  'Delhi': '10:15',
+  'West Bengal': '10:45',
+  'Gujarat': '11:15',
+  'Andhra Pradesh': '11:45',
+};
+
 // Function to search trains
 export const searchTrains = (from: string, to: string, date: string) => {
   try {
-    if (!from || !to) {
+    if (!from && !to) {
+      // If no origin and destination provided, return all trains
       return {
-        success: false,
-        data: [],
-        message: "Both origin and destination stations are required"
+        success: true,
+        data: mockDatabaseData.train.map(train => {
+          const route = mockDatabaseData.route.find(r => r.Train_Number === train.Train_Number);
+          const scheduleInfo = mockDatabaseData.schedule.find(s => s.Train_Number === train.Train_Number);
+          
+          if (route && scheduleInfo) {
+            return {
+              id: train.Train_Number,
+              train_number: train.Train_Number.toString(),
+              train_name: train.Train_Name,
+              from: route.Starting_Station,
+              to: route.End_Station,
+              departureTime: scheduleInfo.Departure_Time.split(':').slice(0, 2).join(':'),
+              arrivalTime: scheduleInfo.Arrival_Time.split(':').slice(0, 2).join(':'),
+              duration: `${Math.floor(scheduleInfo.Duration / 60)}h ${scheduleInfo.Duration % 60}m`,
+              days: train.days || ["Daily"],
+              classes: train.classes,
+              availableSeats: train.availableSeats,
+              fare: train.fare,
+              tatkal_available: train.tatkal_available,
+              tatkal_booking_start_time: train.tatkal_booking_start_time,
+              imageUrl: train.imageUrl,
+              train_type: train.train_type
+            };
+          }
+          return null;
+        }).filter(Boolean),
+        message: "All trains retrieved"
       };
     }
 
     // Find routes that match the origin and destination
     const matchedRoutes = mockDatabaseData.route.filter(route => {
-      const fromMatch = route.Starting_Station.toLowerCase().includes(from.toLowerCase());
-      const toMatch = route.End_Station.toLowerCase().includes(to.toLowerCase());
+      const fromMatch = !from || route.Starting_Station.toLowerCase().includes(from.toLowerCase());
+      const toMatch = !to || route.End_Station.toLowerCase().includes(to.toLowerCase());
       return fromMatch && toMatch;
     });
 
@@ -1035,6 +1070,11 @@ export const searchTrains = (from: string, to: string, date: string) => {
       const scheduleInfo = mockDatabaseData.schedule.find(s => s.Train_Number === route.Train_Number);
       
       if (trainInfo && scheduleInfo) {
+        const startingStationState = getStateFromStation(route.Starting_Station);
+        
+        // Set tatkal booking time based on starting station's state
+        const tatkalTime = tatkalTimingsByState[startingStationState as keyof typeof tatkalTimingsByState] || '12:00';
+        
         return {
           id: trainInfo.Train_Number,
           train_number: trainInfo.Train_Number.toString(),
@@ -1049,9 +1089,10 @@ export const searchTrains = (from: string, to: string, date: string) => {
           availableSeats: trainInfo.availableSeats,
           fare: trainInfo.fare,
           tatkal_available: trainInfo.tatkal_available,
-          tatkal_booking_start_time: trainInfo.tatkal_booking_start_time,
+          tatkal_booking_start_time: tatkalTime, // Use calculated tatkal time
           imageUrl: trainInfo.imageUrl,
-          train_type: trainInfo.train_type
+          train_type: trainInfo.train_type,
+          starting_station_state: startingStationState
         };
       }
       return null;
