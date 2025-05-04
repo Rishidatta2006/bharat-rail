@@ -189,7 +189,7 @@ const DatabaseView = () => {
                     key={table}
                     variant={table === activeTab ? "default" : "outline"} 
                     className="w-full justify-start"
-                    onClick={() => setActiveTab(table as TableName)} // Cast to TableName
+                    onClick={() => setActiveTab(table as TableName)} 
                   >
                     <div className="flex items-center">
                       <Table className="h-4 w-4 mr-2" />
