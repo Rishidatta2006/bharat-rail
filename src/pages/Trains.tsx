@@ -168,7 +168,7 @@ const Trains = () => {
                         <SelectValue placeholder="Any class" />
                       </SelectTrigger>
                       <SelectContent>
-                        <SelectItem value="">Any class</SelectItem>
+                        <SelectItem value="any">Any class</SelectItem>
                         {travelClasses.map((c) => (
                           <SelectItem key={c.value} value={c.value}>{c.label}</SelectItem>
                         ))}
