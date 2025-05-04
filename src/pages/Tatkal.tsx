@@ -149,7 +149,7 @@ const Tatkal = () => {
                         <SelectValue placeholder="All States" />
                       </SelectTrigger>
                       <SelectContent>
-                        <SelectItem value="">All States</SelectItem>
+                        <SelectItem value="all-states">All States</SelectItem>
                         {statesList.map((state) => (
                           <SelectItem key={state} value={state}>{state}</SelectItem>
                         ))}
@@ -164,7 +164,7 @@ const Tatkal = () => {
                         <SelectValue placeholder="All Timings" />
                       </SelectTrigger>
                       <SelectContent>
-                        <SelectItem value="">All Timings</SelectItem>
+                        <SelectItem value="all-timings">All Timings</SelectItem>
                         {uniqueTimings.map((time) => (
                           <SelectItem key={time} value={time}>{time} AM</SelectItem>
                         ))}
