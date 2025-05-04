@@ -120,7 +120,7 @@ const DatabaseView = () => {
 
   // Get unique stations for filtering
   const uniqueStations = Array.from(
-    new Set((mockDatabaseData.station || []).map((station: any) => station.Station_Name))
+    new Set((mockDatabaseData.station || []).map((station: any) => station.name))
   ).filter(Boolean);
   
   // Get unique train types for filtering
@@ -184,7 +184,7 @@ const DatabaseView = () => {
             </CardHeader>
             <CardContent>
               <div className="space-y-2">
-                {Object.keys(mockDatabaseData).map(table => (
+                {(Object.keys(mockDatabaseData) as Array<TableName>).map((table) => (
                   <Button 
                     key={table}
                     variant={table === activeTab ? "default" : "outline"} 

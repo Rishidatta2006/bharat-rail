@@ -97,7 +97,7 @@ const Trains = () => {
         setSearchResults([]);
         toast({
           title: "No Trains Found",
-          description: result.message,
+          description: result.message || "No trains found for this route",
         });
       }
     } catch (error) {

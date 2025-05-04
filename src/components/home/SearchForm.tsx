@@ -90,7 +90,7 @@ const SearchForm = () => {
   };
 
   // Get station names from the database
-  const stationNames = stations.map(station => station.name); // Changed from station.Station_Name to station.name
+  const stationNames = stations.map(station => station.name); 
 
   return (
     <Card className="border-none shadow-lg relative z-20 -mt-12 md:-mt-24">
