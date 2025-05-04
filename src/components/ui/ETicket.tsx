@@ -80,8 +80,8 @@ const ETicket: React.FC<ETicketProps> = ({ isOpen, onClose, ticket }) => {
               <p className="font-bold text-lg">{ticket.pnr}</p>
             </div>
             <Badge 
-              variant={ticket.status === 'Confirmed' ? 'success' : 
-                      ticket.status === 'Waiting' ? 'warning' : 'destructive'}
+              variant={ticket.status === 'Confirmed' ? 'secondary' : 
+                      ticket.status === 'Waiting' ? 'outline' : 'destructive'}
               className={`
                 ${ticket.status === 'Confirmed' ? 'bg-green-100 text-green-800' : 
                   ticket.status === 'Waiting' ? 'bg-yellow-100 text-yellow-800' : 
