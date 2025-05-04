@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from 'react';
 import Navbar from '@/components/layout/Navbar';
 import Footer from '@/components/layout/Footer';
@@ -8,6 +7,7 @@ import { Button } from '@/components/ui/button';
 import { useToast } from '@/components/ui/use-toast';
 import { useNavigate } from 'react-router-dom';
 import { getTableData } from '@/utils/db';
+import ETicket from '@/components/ui/ETicket';
 
 // Define proper types for each database table
 interface Booking {
@@ -97,6 +97,10 @@ const Bookings = () => {
   const navigate = useNavigate();
   const [userBookings, setUserBookings] = useState<UserBooking[]>([]);
   const [isLoading, setIsLoading] = useState(true);
+  
+  // Added state for e-ticket viewing
+  const [isTicketOpen, setIsTicketOpen] = useState(false);
+  const [currentTicket, setCurrentTicket] = useState<any>(null);
 
   // Fetch bookings on component mount
   useEffect(() => {
@@ -239,9 +243,57 @@ const Bookings = () => {
     }
   };
 
-  // View e-ticket
+  // Updated viewETicket function
   const viewETicket = (pnr: string) => {
-    navigate(`/pnr?pnr=${pnr}`);
+    // Find the booking details
+    const booking = userBookings.find(b => b.pnr === pnr);
+    
+    if (!booking) {
+      toast({
+        title: "Error",
+        description: "Booking details not found",
+        variant: "destructive"
+      });
+      return;
+    }
+    
+    // Get additional details
+    const ticket = (getTableData('ticket') as any[]).find((t) => t.PNR === pnr);
+    const payment = (getTableData('payment') as any[]).find((p) => p.PNR === pnr);
+    
+    // Create ticket data object for the e-ticket component
+    const ticketData = {
+      pnr: booking.pnr,
+      train: {
+        name: booking.trainName,
+        number: booking.trainNumber,
+        from: booking.from,
+        to: booking.to,
+        departureTime: booking.departureTime,
+        arrivalTime: booking.arrivalTime
+      },
+      bookingDate: new Date().toLocaleDateString(),
+      journeyDate: booking.date,
+      passengers: [{
+        name: booking.passengerName,
+        age: 30, // Default age
+        gender: 'Male', // Default gender
+        seat: ticket ? ticket.Seat_No : 'Not assigned',
+        status: booking.status
+      }],
+      class: ticket ? ticket.Class : booking.class,
+      coach: ticket ? ticket.Seat_No.split('-')[0] : 'NA',
+      status: booking.status,
+      fareDetails: {
+        baseFare: booking.totalFare,
+        gst: Math.round(booking.totalFare * 0.05),
+        total: Math.round(booking.totalFare * 1.05)
+      }
+    };
+    
+    // Open the e-ticket modal
+    setCurrentTicket(ticketData);
+    setIsTicketOpen(true);
   };
 
   if (!isAuthenticated) {
@@ -343,6 +395,15 @@ const Bookings = () => {
         </div>
       </main>
       <Footer />
+      
+      {/* Add e-ticket modal */}
+      {currentTicket && (
+        <ETicket 
+          isOpen={isTicketOpen}
+          onClose={() => setIsTicketOpen(false)}
+          ticket={currentTicket}
+        />
+      )}
     </div>
   );
 };

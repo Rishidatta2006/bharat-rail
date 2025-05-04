@@ -1006,10 +1006,10 @@ export const tatkalTimingsByState = {
   'Maharashtra': '10:30',
   'Karnataka': '11:00',
   'Telangana': '11:30',
-  'Delhi': '10:15',
-  'West Bengal': '10:45',
-  'Gujarat': '11:15',
-  'Andhra Pradesh': '11:45',
+  'Delhi': '12:00',
+  'West Bengal': '12:30',
+  'Gujarat': '13:00',
+  'Andhra Pradesh': '13:30',
 };
 
 // Function to search trains
@@ -1195,7 +1195,7 @@ export const getPNRStatus = async (pnr: string) => {
   }
 };
 
-// Function to create a new booking
+// Function to create a new booking - updated to ensure proper database updates
 export const createBooking = async (bookingData: any) => {
   try {
     // Generate a new Booking ID with prefix TK
@@ -1204,8 +1204,28 @@ export const createBooking = async (bookingData: any) => {
     // Generate a random PNR number (10 digits)
     const pnr = Math.floor(Math.random() * 9000000000 + 1000000000).toString();
     
-    // Create passenger ID
-    const passengerId = `SE${Math.floor(Math.random() * 1000)}DFS${Math.floor(Math.random() * 100)}R`;
+    // Create passenger entries for each passenger
+    const passengers = bookingData.passengers.map((p: any) => {
+      const passengerId = `SE${Math.floor(Math.random() * 1000)}DFS${Math.floor(Math.random() * 100)}R`;
+      
+      // Add passenger to the mock database
+      mockDatabaseData.passenger.push({
+        Passenger_ID: passengerId,
+        First_Name: p.name.split(' ')[0],
+        Last_Name: p.name.includes(' ') ? p.name.split(' ').slice(1).join(' ') : 'Passenger',
+        Email: `passenger${Math.floor(Math.random() * 10000)}@example.com`,
+        Gender: p.gender,
+        Age: p.age,
+        Phone_Number: `${Math.floor(Math.random() * 9000000000) + 1000000000}`
+      });
+      
+      return {
+        passengerId,
+        name: p.name,
+        age: p.age,
+        gender: p.gender
+      };
+    });
     
     // Get the train details
     const train = mockDatabaseData.train.find(train => train.Train_Number === bookingData.trainId);
@@ -1221,82 +1241,92 @@ export const createBooking = async (bookingData: any) => {
       };
     }
     
-    // Create passenger entries for each passenger
-    const passengers = bookingData.passengers.map((p: any) => ({
-      Passenger_ID: `SE${Math.floor(Math.random() * 1000)}DFS${Math.floor(Math.random() * 100)}R`,
-      First_Name: p.name.split(' ')[0],
-      Last_Name: p.name.includes(' ') ? p.name.split(' ').slice(1).join(' ') : 'Passenger',
-      Email: `passenger${Math.floor(Math.random() * 10000)}@example.com`,
-      Gender: p.gender,
-      Age: p.age,
-      Phone_Number: `${Math.floor(Math.random() * 9000000000) + 1000000000}`
-    }));
+    // Create booking entry for each passenger
+    const bookings = passengers.map((p: any, index: number) => {
+      const currentBookingId = index === 0 ? bookingId : `${bookingId}-${index}`;
+      
+      // Add booking to the mock database
+      const booking = {
+        Booking_ID: currentBookingId,
+        Passenger_ID: p.passengerId,
+        Train_Number: bookingData.trainId,
+        Date_of_Journey: bookingData.journeyDate,
+        Source_Station: route.Starting_Station,
+        Destination_Station: route.End_Station,
+        Booking_Status: 'Confirmed'
+      };
+      
+      mockDatabaseData.booking.push(booking);
+      
+      return booking;
+    });
     
-    // Add passengers to the mock database
-    mockDatabaseData.passenger.push(...passengers);
-    
-    // Create booking entry
-    const booking = {
-      Booking_ID: bookingId,
-      Passenger_ID: passengers[0].Passenger_ID,
-      Train_Number: bookingData.trainId,
-      Date_of_Journey: bookingData.journeyDate,
-      Source_Station: route.Starting_Station,
-      Destination_Station: route.End_Station,
-      Booking_Status: 'Confirmed'
-    };
-    
-    // Add booking to the mock database
-    mockDatabaseData.booking.push(booking);
-    
-    // Create ticket entry
-    const ticket = {
-      PNR: pnr,
-      Booking_ID: bookingId,
-      Seat_No: `${bookingData.class[0]}-${Math.floor(Math.random() * 50) + 1}`,
-      Berth_Type: ['Lower', 'Middle', 'Upper'][Math.floor(Math.random() * 3)] as 'Lower' | 'Middle' | 'Upper',
-      Class: bookingData.class,
-      Boarding_Point: route.Starting_Station
-    };
-    
-    // Add ticket to the mock database
-    mockDatabaseData.ticket.push(ticket);
-    
-    // Create mybooking entry
-    const mybooking = {
-      MyBooking_ID: mockDatabaseData.mybookings.length + 1,
-      Passenger_ID: passengers[0].Passenger_ID,
-      PNR: pnr,
-      Booking_Status: 'Confirmed'
-    };
-    
-    // Add mybooking to the mock database
-    mockDatabaseData.mybookings.push(mybooking);
-    
-    // Create payment entry
-    const payment = {
-      Payment_ID: mockDatabaseData.payment.length + 1,
-      PNR: pnr,
-      Amount: bookingData.totalFare,
-      Payment_Method: ['Credit Card', 'Debit Card', 'Net Banking', 'UPI'][Math.floor(Math.random() * 4)] as 'Credit Card' | 'Debit Card' | 'Net Banking' | 'UPI',
-      Payment_Status: 'Received'
-    };
-    
-    // Add payment to the mock database
-    mockDatabaseData.payment.push(payment);
+    // Create ticket entries for each passenger
+    const tickets = passengers.map((p: any, index: number) => {
+      const currentPNR = index === 0 ? pnr : `${pnr}-${index}`;
+      const currentBookingId = index === 0 ? bookingId : `${bookingId}-${index}`;
+      
+      // Create random seat and berth
+      const seatNo = `${bookingData.class[0]}${Math.floor(Math.random() * 10) + 1}-${Math.floor(Math.random() * 50) + 1}`;
+      const berthType = ['Lower', 'Middle', 'Upper'][Math.floor(Math.random() * 3)] as 'Lower' | 'Middle' | 'Upper';
+      
+      // Add ticket to the mock database
+      const ticket = {
+        PNR: currentPNR,
+        Booking_ID: currentBookingId,
+        Seat_No: seatNo,
+        Berth_Type: berthType,
+        Class: bookingData.class,
+        Boarding_Point: route.Starting_Station
+      };
+      
+      mockDatabaseData.ticket.push(ticket);
+      
+      // Create mybooking entry
+      const mybooking = {
+        MyBooking_ID: mockDatabaseData.mybookings.length + index + 1,
+        Passenger_ID: p.passengerId,
+        PNR: currentPNR,
+        Booking_Status: 'Confirmed'
+      };
+      
+      mockDatabaseData.mybookings.push(mybooking);
+      
+      // Create payment entry
+      const payment = {
+        Payment_ID: mockDatabaseData.payment.length + index + 1,
+        PNR: currentPNR,
+        Amount: bookingData.totalFare / passengers.length, // Split fare among passengers
+        Payment_Method: ['Credit Card', 'Debit Card', 'Net Banking', 'UPI'][Math.floor(Math.random() * 4)] as 'Credit Card' | 'Debit Card' | 'Net Banking' | 'UPI',
+        Payment_Status: 'Received'
+      };
+      
+      mockDatabaseData.payment.push(payment);
+      
+      return {
+        pnr: currentPNR,
+        seatNo,
+        berthType
+      };
+    });
     
     // Return the booking details
     return {
       success: true,
       booking: {
-        pnr,
+        pnr: tickets[0].pnr, // Return the first PNR for simplicity in UI
         bookingId,
         status: 'Confirmed',
         train: train.Train_Name,
         from: route.Starting_Station,
         to: route.End_Station,
         date: bookingData.journeyDate,
-        passengers: bookingData.passengers,
+        passengers: bookingData.passengers.map((p: any, index: number) => ({
+          ...p,
+          seat: tickets[index].seatNo,
+          berth: tickets[index].berthType,
+          pnr: tickets[index].pnr
+        })),
         class: bookingData.class,
         totalFare: bookingData.totalFare
       },

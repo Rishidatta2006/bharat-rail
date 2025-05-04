@@ -20,6 +20,7 @@ import { useNavigate } from 'react-router-dom';
 import { createBooking } from '@/utils/db';
 import ETicket from './ETicket';
 import TrainIcons from './TrainIcons';
+import PaymentModal from './PaymentModal';
 
 interface Train {
   id: number;
@@ -63,7 +64,12 @@ const TrainCard = ({ train }: TrainCardProps) => {
   const [journeyDate, setJourneyDate] = useState('');
   const [isBooking, setIsBooking] = useState(false);
   
-  // New state for e-ticket display
+  // New state for payment modal
+  const [isPaymentOpen, setIsPaymentOpen] = useState(false);
+  const [totalAmount, setTotalAmount] = useState(0);
+  const [bookingData, setBookingData] = useState<any>(null);
+  
+  // E-ticket state
   const [isTicketOpen, setIsTicketOpen] = useState(false);
   const [ticketData, setTicketData] = useState<any>(null);
 
@@ -116,10 +122,12 @@ const TrainCard = ({ train }: TrainCardProps) => {
   // Calculate total fare
   const calculateTotalFare = () => {
     if (!selectedClass || !train.fare) return 0;
-    return (train.fare[selectedClass] || 0) * passengers.length;
+    const baseFare = (train.fare[selectedClass] || 0) * passengers.length;
+    const gst = Math.round(baseFare * 0.05); // 5% GST
+    return baseFare + gst;
   };
 
-  // Handle booking submission
+  // Handle booking submission - now opens payment modal
   const handleBookingSubmit = async () => {
     // Validate inputs
     if (!selectedClass) {
@@ -151,27 +159,41 @@ const TrainCard = ({ train }: TrainCardProps) => {
       return;
     }
 
+    // Calculate final fare
+    const totalFare = calculateTotalFare();
+    
+    // Create booking data object to use after payment
+    const bookingData = {
+      userId: 1, // Mock user ID (in a real app, this would come from authentication)
+      trainId: train.id,
+      bookingDate: new Date().toISOString().split('T')[0],
+      journeyDate,
+      passengers: passengers.map(p => ({
+        name: p.name,
+        age: parseInt(p.age),
+        gender: p.gender,
+        seat: "To be allocated",
+        status: "Confirmed"
+      })),
+      class: selectedClass,
+      totalFare: totalFare,
+      bookingType
+    };
+    
+    // Save booking data for later and open payment dialog
+    setBookingData(bookingData);
+    setTotalAmount(totalFare);
+    setIsDialogOpen(false);
+    setIsPaymentOpen(true);
+  };
+
+  // Handle payment success
+  const handlePaymentSuccess = async () => {
+    setIsPaymentOpen(false);
     setIsBooking(true);
-
+    
     try {
-      // Process booking
-      const bookingData = {
-        userId: 1, // Mock user ID (in a real app, this would come from authentication)
-        trainId: train.id,
-        bookingDate: new Date().toISOString().split('T')[0],
-        journeyDate,
-        passengers: passengers.map(p => ({
-          name: p.name,
-          age: parseInt(p.age),
-          gender: p.gender,
-          seat: "To be allocated",
-          status: "Confirmed"
-        })),
-        class: selectedClass,
-        totalFare: calculateTotalFare(),
-        bookingType
-      };
-
+      // Process booking with the saved data
       const result = await createBooking(bookingData);
       
       if (result.success) {
@@ -201,13 +223,12 @@ const TrainCard = ({ train }: TrainCardProps) => {
           coach: `${selectedClass[0]}${Math.floor(Math.random() * 10) + 1}`,
           status: 'Confirmed',
           fareDetails: {
-            baseFare: calculateTotalFare(),
-            gst: Math.round(calculateTotalFare() * 0.05),
-            total: Math.round(calculateTotalFare() * 1.05)
+            baseFare: bookingData.totalFare,
+            gst: Math.round(bookingData.totalFare * 0.05),
+            total: bookingData.totalFare
           }
         });
         
-        setIsDialogOpen(false);
         setIsTicketOpen(true);
       } else {
         toast({
@@ -455,6 +476,11 @@ const TrainCard = ({ train }: TrainCardProps) => {
                   <span>₹{train.fare?.[selectedClass] || 0} × {passengers.length}</span>
                 </div>
                 
+                <div className="flex justify-between items-center text-sm">
+                  <span>GST (5%):</span>
+                  <span>₹{Math.round(((train.fare?.[selectedClass] || 0) * passengers.length) * 0.05)}</span>
+                </div>
+                
                 <div className="flex justify-between items-center font-bold mt-2 text-lg">
                   <span>Total Fare:</span>
                   <span>₹{calculateTotalFare()}</span>
@@ -468,13 +494,20 @@ const TrainCard = ({ train }: TrainCardProps) => {
             <Button 
               onClick={handleBookingSubmit} 
               disabled={isBooking}
-              className="bg-primary-500 hover:bg-primary-600"
             >
-              {isBooking ? "Processing..." : "Confirm Booking"}
+              {isBooking ? "Processing..." : "Proceed to Payment"}
             </Button>
           </DialogFooter>
         </DialogContent>
       </Dialog>
+
+      {/* Payment Modal */}
+      <PaymentModal
+        isOpen={isPaymentOpen}
+        onClose={() => setIsPaymentOpen(false)}
+        amount={totalAmount}
+        onSuccess={handlePaymentSuccess}
+      />
 
       {/* E-Ticket View */}
       {ticketData && (
