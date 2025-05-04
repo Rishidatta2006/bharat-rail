@@ -1,4 +1,3 @@
-
 import { useState } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
@@ -6,53 +5,60 @@ import { Search, User, Menu, X } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useAuth } from '@/context/AuthContext';
 import { useIsMobile } from '@/hooks/use-mobile';
-
 const Navbar = () => {
   const isMobile = useIsMobile();
   const location = useLocation();
   const navigate = useNavigate();
-  const { isAuthenticated, logout } = useAuth();
-
+  const {
+    isAuthenticated,
+    logout
+  } = useAuth();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-
-  const menuItems = [
-    { name: "Home", path: "/" },
-    { name: "Find Trains", path: "/trains" },
-    { name: "My Bookings", path: "/bookings" },
-    { name: "PNR Status", path: "/pnr-status" },
-    { name: "Tatkal Booking", path: "/tatkal" },
-    { name: "Database", path: "/database" },
-    { name: "Contact", path: "/contact" },
-  ];
-
+  const menuItems = [{
+    name: "Home",
+    path: "/"
+  }, {
+    name: "Find Trains",
+    path: "/trains"
+  }, {
+    name: "My Bookings",
+    path: "/bookings"
+  }, {
+    name: "PNR Status",
+    path: "/pnr-status"
+  }, {
+    name: "Tatkal Booking",
+    path: "/tatkal"
+  }, {
+    name: "Database",
+    path: "/database"
+  }, {
+    name: "Contact",
+    path: "/contact"
+  }];
   const toggleMenu = () => {
     setIsMobileMenuOpen(!isMobileMenuOpen);
   };
-
   const handleLoginClick = () => {
     navigate('/login');
     if (isMobileMenuOpen) setIsMobileMenuOpen(false);
   };
-
   const handleLogoutClick = () => {
     logout();
     if (isMobileMenuOpen) setIsMobileMenuOpen(false);
   };
-
   const handleBookNowClick = () => {
     navigate('/trains');
     if (isMobileMenuOpen) setIsMobileMenuOpen(false);
   };
-
-  return (
-    <header className="sticky top-0 z-50 w-full bg-white shadow-sm">
+  return <header className="sticky top-0 z-50 w-full bg-white shadow-sm">
       <div className="container mx-auto px-4 py-3 flex items-center justify-between">
         <Link to="/" className="flex items-center gap-2">
           <div className="flex items-center">
             <span className="font-bold text-2xl text-primary-500">Bharat</span>
             <span className="font-bold text-2xl text-secondary-500">Rail</span>
           </div>
-          <span className="hidden md:inline-block text-xs bg-primary-100 text-primary-800 px-2 py-0.5 rounded-full">Vista</span>
+          
         </Link>
 
         {/* Desktop Navigation */}
@@ -81,15 +87,11 @@ const Navbar = () => {
           <Button variant="outline" size="icon" onClick={() => navigate('/trains')}>
             <Search className="h-4 w-4" />
           </Button>
-          {isAuthenticated ? (
-            <Button variant="outline" onClick={handleLogoutClick}>
+          {isAuthenticated ? <Button variant="outline" onClick={handleLogoutClick}>
               <User className="h-4 w-4 mr-2" /> Logout
-            </Button>
-          ) : (
-            <Button variant="outline" onClick={handleLoginClick}>
+            </Button> : <Button variant="outline" onClick={handleLoginClick}>
               <User className="h-4 w-4 mr-2" /> Login
-            </Button>
-          )}
+            </Button>}
           <Button className="bg-primary-500 hover:bg-primary-600" onClick={handleBookNowClick}>Book Now</Button>
         </div>
 
@@ -100,33 +102,20 @@ const Navbar = () => {
       </div>
 
       {/* Mobile Navigation */}
-      <div 
-        className={cn(
-          "fixed inset-0 bg-white z-40 lg:hidden pt-16 px-4",
-          isMobileMenuOpen ? "flex flex-col" : "hidden"
-        )}
-      >
+      <div className={cn("fixed inset-0 bg-white z-40 lg:hidden pt-16 px-4", isMobileMenuOpen ? "flex flex-col" : "hidden")}>
         <nav className="flex flex-col gap-4 py-4">
-          {menuItems.map((item, index) => (
-            <Link key={index} to={item.path} className="text-lg font-medium p-2 hover:bg-muted rounded-md" onClick={toggleMenu}>
+          {menuItems.map((item, index) => <Link key={index} to={item.path} className="text-lg font-medium p-2 hover:bg-muted rounded-md" onClick={toggleMenu}>
               {item.name}
-            </Link>
-          ))}
+            </Link>)}
           <div className="border-t border-border my-2"></div>
-          {isAuthenticated ? (
-            <Button variant="outline" className="justify-start" onClick={handleLogoutClick}>
+          {isAuthenticated ? <Button variant="outline" className="justify-start" onClick={handleLogoutClick}>
               <User className="h-4 w-4 mr-2" /> Logout
-            </Button>
-          ) : (
-            <Button variant="outline" className="justify-start" onClick={handleLoginClick}>
+            </Button> : <Button variant="outline" className="justify-start" onClick={handleLoginClick}>
               <User className="h-4 w-4 mr-2" /> Login
-            </Button>
-          )}
+            </Button>}
           <Button className="bg-primary-500 hover:bg-primary-600" onClick={handleBookNowClick}>Book Now</Button>
         </nav>
       </div>
-    </header>
-  );
+    </header>;
 };
-
 export default Navbar;
