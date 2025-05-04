@@ -15,7 +15,7 @@ const FeaturedTrains = () => {
       duration: '15h 50m',
       days: ['Mon', 'Wed', 'Fri', 'Sun'],
       classes: ['SL', '3A', '2A', '1A'],
-      imageUrl: 'https://images.unsplash.com/photo-1540544660406-6a69dacb2804?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=600&q=80'
+      imageUrl: 'https://images.unsplash.com/photo-1474487548417-781cb71495f3?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80'
     },
     {
       id: 2,
@@ -28,7 +28,7 @@ const FeaturedTrains = () => {
       duration: '5h 00m',
       days: ['Daily'],
       classes: ['CC', 'EC'],
-      imageUrl: 'https://images.unsplash.com/photo-1474487548417-781cb71495f3?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=600&q=80'
+      imageUrl: 'https://images.unsplash.com/photo-1527303361864-c228e3f25587?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80'
     },
     {
       id: 3,
@@ -41,7 +41,7 @@ const FeaturedTrains = () => {
       duration: '12h 00m',
       days: ['Tue', 'Thu', 'Sat'],
       classes: ['CC', 'EC'],
-      imageUrl: 'https://images.unsplash.com/photo-1527303361864-c228e3f25587?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=600&q=80'
+      imageUrl: 'https://images.unsplash.com/photo-1540544660406-6a69dacb2804?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80'
     }
   ];
 

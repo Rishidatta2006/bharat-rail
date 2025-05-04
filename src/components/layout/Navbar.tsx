@@ -66,8 +66,11 @@ const Navbar = () => {
           <Link to="/bookings" className="text-foreground hover:text-primary-500 transition-colors font-medium">
             My Bookings
           </Link>
-          <Link to="/pnr" className="text-foreground hover:text-primary-500 transition-colors font-medium">
+          <Link to="/pnr-status" className="text-foreground hover:text-primary-500 transition-colors font-medium">
             PNR Status
+          </Link>
+          <Link to="/tatkal" className="text-foreground hover:text-primary-500 transition-colors font-medium">
+            Tatkal
           </Link>
           <Link to="/contact" className="text-foreground hover:text-primary-500 transition-colors font-medium">
             Contact
