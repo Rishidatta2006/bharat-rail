@@ -15,10 +15,11 @@ import { Label } from '@/components/ui/label';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { useToast } from '@/components/ui/use-toast';
-import { TrainFront, Clock, Calendar, User, Ticket } from 'lucide-react';
+import { Clock, Calendar, User, Ticket } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { createBooking } from '@/utils/db';
 import ETicket from './ETicket';
+import TrainIcons from './TrainIcons';
 
 interface Train {
   id: number;
@@ -69,7 +70,17 @@ const TrainCard = ({ train }: TrainCardProps) => {
   // Get the actual train name and number using fallbacks
   const trainName = train.train_name || train.name || '';
   const trainNumber = train.train_number || train.number || '';
-  
+
+  // Determine train type based on name
+  const getTrainType = () => {
+    const nameLower = trainName.toLowerCase();
+    if (nameLower.includes('rajdhani')) return 'rajdhani';
+    if (nameLower.includes('shatabdi')) return 'shatabdi'; 
+    if (nameLower.includes('vande bharat')) return 'vande-bharat';
+    return 'default';
+  };
+
+  // Handle check availability
   const handleCheckAvailability = () => {
     setIsDialogOpen(true);
   };
@@ -220,24 +231,34 @@ const TrainCard = ({ train }: TrainCardProps) => {
   return (
     <>
       <Card className="overflow-hidden hover:shadow-lg transition-shadow">
-        <div className="relative h-48 overflow-hidden">
+        <div className="relative h-48 overflow-hidden bg-gray-100">
           {train.imageUrl ? (
             <img 
               src={train.imageUrl} 
               alt={trainName}
               className="w-full h-full object-cover transition-transform hover:scale-105 duration-300"
+              onError={(e) => {
+                // When image fails to load, render nothing so the fallback shows
+                e.currentTarget.style.display = 'none';
+              }}
             />
-          ) : (
-            <div className="w-full h-full bg-gray-200 flex items-center justify-center">
-              <TrainFront className="h-16 w-16 text-gray-400" />
-            </div>
-          )}
-          <div className="absolute top-4 left-4 bg-white/90 backdrop-blur-sm rounded-md py-1 px-3 flex items-center space-x-1">
-            <TrainFront className="h-4 w-4 text-primary-500" />
+          ) : null}
+          
+          {/* Fallback - Always rendered, but hidden when image loads properly */}
+          <div className="absolute inset-0 flex items-center justify-center">
+            <TrainIcons 
+              trainName={trainName} 
+              size={48} 
+              className="w-full h-full flex items-center justify-center"
+            />
+          </div>
+          
+          <div className="absolute top-4 left-4 bg-white/90 backdrop-blur-sm rounded-md py-1 px-3 flex items-center space-x-1 z-10">
             <span className="text-sm font-semibold">{trainNumber}</span>
           </div>
+          
           {train.tatkal_available === 'Yes' && (
-            <div className="absolute top-4 right-4">
+            <div className="absolute top-4 right-4 z-10">
               <Badge className="bg-orange-500 hover:bg-orange-600">
                 Tatkal {train.tatkal_booking_start_time} AM
               </Badge>

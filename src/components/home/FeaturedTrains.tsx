@@ -1,8 +1,11 @@
 
 import { Button } from '@/components/ui/button';
 import TrainCard from '../ui/TrainCard';
+import { useNavigate } from 'react-router-dom';
 
 const FeaturedTrains = () => {
+  const navigate = useNavigate();
+  
   const featuredTrains = [
     {
       id: 1,
@@ -15,7 +18,7 @@ const FeaturedTrains = () => {
       duration: '15h 50m',
       days: ['Mon', 'Wed', 'Fri', 'Sun'],
       classes: ['SL', '3A', '2A', '1A'],
-      imageUrl: 'https://images.unsplash.com/photo-1474487548417-781cb71495f3?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80'
+      imageUrl: '/trains/rajdhani.jpg'
     },
     {
       id: 2,
@@ -28,7 +31,7 @@ const FeaturedTrains = () => {
       duration: '5h 00m',
       days: ['Daily'],
       classes: ['CC', 'EC'],
-      imageUrl: 'https://images.unsplash.com/photo-1527303361864-c228e3f25587?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80'
+      imageUrl: '/trains/shatabdi.jpg'
     },
     {
       id: 3,
@@ -41,9 +44,13 @@ const FeaturedTrains = () => {
       duration: '12h 00m',
       days: ['Tue', 'Thu', 'Sat'],
       classes: ['CC', 'EC'],
-      imageUrl: 'https://images.unsplash.com/photo-1540544660406-6a69dacb2804?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80'
+      imageUrl: '/trains/vande-bharat.jpg'
     }
   ];
+
+  const handleViewAllTrains = () => {
+    navigate('/trains');
+  };
 
   return (
     <section className="py-16 bg-gray-50">
@@ -62,7 +69,7 @@ const FeaturedTrains = () => {
         </div>
         
         <div className="text-center mt-12">
-          <Button className="bg-secondary-500 hover:bg-secondary-600">View All Trains</Button>
+          <Button className="bg-secondary-500 hover:bg-secondary-600" onClick={handleViewAllTrains}>View All Trains</Button>
         </div>
       </div>
     </section>
