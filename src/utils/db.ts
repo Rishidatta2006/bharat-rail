@@ -19,6 +19,38 @@ export const dbConfig: DatabaseConfig = {
   port: 3306
 };
 
+// Event system for real-time updates
+type EventCallback = (data: any) => void;
+type EventType = 'booking-created' | 'booking-updated' | 'booking-canceled';
+
+class EventSystem {
+  private subscribers: Record<EventType, EventCallback[]> = {
+    'booking-created': [],
+    'booking-updated': [],
+    'booking-canceled': []
+  };
+
+  subscribe(eventType: EventType, callback: EventCallback) {
+    if (!this.subscribers[eventType]) {
+      this.subscribers[eventType] = [];
+    }
+    this.subscribers[eventType].push(callback);
+    
+    // Return unsubscribe function
+    return () => {
+      this.subscribers[eventType] = this.subscribers[eventType].filter(cb => cb !== callback);
+    };
+  }
+
+  publish(eventType: EventType, data: any) {
+    if (this.subscribers[eventType]) {
+      this.subscribers[eventType].forEach(callback => callback(data));
+    }
+  }
+}
+
+export const dbEvents = new EventSystem();
+
 // Mock database tables and data for the frontend
 // This mimics the structure from the SQL queries provided
 export const mockDatabaseData = {
@@ -1195,7 +1227,7 @@ export const getPNRStatus = async (pnr: string) => {
   }
 };
 
-// Function to create a new booking - updated to ensure proper database updates
+// Function to create a new booking - updated to ensure proper database updates and real-time notifications
 export const createBooking = async (bookingData: any) => {
   try {
     // Generate a new Booking ID with prefix TK
@@ -1310,6 +1342,19 @@ export const createBooking = async (bookingData: any) => {
       };
     });
     
+    // Publish booking-created event for real-time updates
+    dbEvents.publish('booking-created', {
+      pnr: tickets[0].pnr,
+      bookingId,
+      status: 'Confirmed',
+      trainName: train.Train_Name,
+      trainNumber: train.Train_Number,
+      from: route.Starting_Station,
+      to: route.End_Station,
+      date: bookingData.journeyDate,
+      passengers: bookingData.passengers
+    });
+    
     // Return the booking details
     return {
       success: true,
@@ -1338,6 +1383,72 @@ export const createBooking = async (bookingData: any) => {
       success: false,
       booking: null,
       message: "Failed to create booking. See console for details."
+    };
+  }
+};
+
+// Function to cancel a booking with real-time updates
+export const cancelBooking = async (pnr: string) => {
+  try {
+    // Update booking status to cancelled
+    const mybookingsData = mockDatabaseData.mybookings;
+    const bookingIndex = mybookingsData.findIndex((b) => b.PNR === pnr);
+    
+    if (bookingIndex === -1) {
+      return {
+        success: false,
+        message: "Booking not found"
+      };
+    }
+    
+    // Update booking status
+    mybookingsData[bookingIndex].Booking_Status = 'Cancelled';
+    
+    // Create cancellation record if it doesn't exist
+    const cancellations = mockDatabaseData.cancellation;
+    const existingCancellation = cancellations.find((c) => c.PNR === pnr);
+    
+    if (!existingCancellation) {
+      const payment = mockDatabaseData.payment.find((p) => p.PNR === pnr);
+      const refundAmount = payment ? Math.floor(payment.Amount * 0.8) : 100;
+      
+      const newCancellation = {
+        Cancellation_ID: `CK${Math.floor(Math.random() * 10000000000)}`,
+        PNR: pnr,
+        Refund_Amount: refundAmount
+      };
+      
+      mockDatabaseData.cancellation.push(newCancellation);
+    }
+    
+    // Find the booking details for the event
+    const ticket = mockDatabaseData.ticket.find(t => t.PNR === pnr);
+    const booking = ticket ? mockDatabaseData.booking.find(b => b.Booking_ID === ticket.Booking_ID) : null;
+    const train = booking ? mockDatabaseData.train.find(t => t.Train_Number === booking.Train_Number) : null;
+    
+    // Publish booking-canceled event
+    if (ticket && booking && train) {
+      dbEvents.publish('booking-canceled', {
+        pnr,
+        bookingId: booking.Booking_ID,
+        status: 'Cancelled',
+        trainName: train.Train_Name,
+        trainNumber: train.Train_Number,
+        from: booking.Source_Station,
+        to: booking.Destination_Station,
+        date: booking.Date_of_Journey
+      });
+    }
+    
+    return {
+      success: true,
+      message: "Booking cancelled successfully"
+    };
+  } catch (error) {
+    console.error("Error cancelling booking:", error);
+    return {
+      success: false,
+      message: "Failed to cancel booking. See console for details."
     };
   }
 };

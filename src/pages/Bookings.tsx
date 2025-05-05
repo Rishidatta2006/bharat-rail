@@ -6,7 +6,7 @@ import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { useToast } from '@/components/ui/use-toast';
 import { useNavigate } from 'react-router-dom';
-import { getTableData } from '@/utils/db';
+import { getTableData, dbEvents, cancelBooking } from '@/utils/db';
 import ETicket from '@/components/ui/ETicket';
 
 // Define proper types for each database table
@@ -106,6 +106,29 @@ const Bookings = () => {
   useEffect(() => {
     if (isAuthenticated) {
       fetchUserBookings();
+      
+      // Subscribe to real-time booking events
+      const createdUnsubscribe = dbEvents.subscribe('booking-created', (data) => {
+        toast({
+          title: "New Booking Created",
+          description: `A new booking has been created for ${data.trainName}.`,
+        });
+        fetchUserBookings(); // Refresh bookings
+      });
+      
+      const canceledUnsubscribe = dbEvents.subscribe('booking-canceled', (data) => {
+        toast({
+          title: "Booking Canceled",
+          description: `Booking for ${data.trainName} has been canceled.`,
+        });
+        fetchUserBookings(); // Refresh bookings
+      });
+      
+      // Clean up subscriptions when component unmounts
+      return () => {
+        createdUnsubscribe();
+        canceledUnsubscribe();
+      };
     } else {
       setIsLoading(false);
     }
@@ -192,33 +215,13 @@ const Bookings = () => {
     }
   };
 
-  // Handle cancel ticket
-  const handleCancelTicket = (bookingId: string, pnr: string) => {
+  // Handle cancel ticket with real-time updates
+  const handleCancelTicket = async (bookingId: string, pnr: string) => {
     try {
-      // Update booking status to cancelled
-      const mybookingsData = getTableData('mybookings') as MyBooking[];
-      const bookingIndex = mybookingsData.findIndex((b) => b.PNR === pnr);
+      // Call the cancelBooking function from db.ts which handles real-time updates
+      const result = await cancelBooking(pnr);
       
-      if (bookingIndex !== -1) {
-        mybookingsData[bookingIndex].Booking_Status = 'Cancelled';
-        
-        // Create cancellation record if it doesn't exist
-        const cancellations = getTableData('cancellation') as Cancellation[];
-        const existingCancellation = cancellations.find((c) => c.PNR === pnr);
-        
-        if (!existingCancellation) {
-          const payment = (getTableData('payment') as Payment[]).find((p) => p.PNR === pnr);
-          const refundAmount = payment ? Math.floor(payment.Amount * 0.8) : 100;
-          
-          const newCancellation = {
-            Cancellation_ID: `CK${Math.floor(Math.random() * 10000000000)}`,
-            PNR: pnr,
-            Refund_Amount: refundAmount
-          };
-          
-          (getTableData('cancellation') as Cancellation[]).push(newCancellation);
-        }
-        
+      if (result.success) {
         // Update the local state to reflect the changes
         setUserBookings(prevBookings => 
           prevBookings.map(booking => 
@@ -231,6 +234,12 @@ const Bookings = () => {
         toast({
           title: "Ticket Cancelled",
           description: `Your booking (PNR: ${pnr}) has been cancelled successfully.`,
+        });
+      } else {
+        toast({
+          title: "Cancellation Failed",
+          description: result.message,
+          variant: "destructive"
         });
       }
     } catch (error) {
